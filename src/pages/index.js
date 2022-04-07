@@ -1,7 +1,9 @@
 import React from 'react';
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.scss'
+import Head from 'next/head';
+import dynamic from 'next/dynamic';
+import styles from '../styles/Home.module.scss';
+// Dynamic imports allows the loading of modules on demand, prevents loading of unused code 
+const GameInfo = dynamic(() => import('../components/hello'));
 
 export default function Home() {
   return (
