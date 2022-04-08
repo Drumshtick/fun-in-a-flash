@@ -1,0 +1,22 @@
+.container {
+  padding: 1em 1em;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100%;
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    .scoreContainer {
+      display: flex;
+      flex-direction: column;
+      .scoreValue {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+  }
+}
