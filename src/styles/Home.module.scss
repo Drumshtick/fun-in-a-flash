@@ -1,0 +1,14 @@
+.gameContainer {
+  margin: 2.5vh 0;
+  color: #fff;
+  max-height: 95vh;
+  height: 95vh;
+  max-width: 414px;
+  width: 414px;
+  background: rgb(145,218,240);
+  background: linear-gradient(
+    325deg, rgba(145,218,240,1) 14%,
+    rgba(63,191,230,1) 75%,
+    rgba(38,164,201,1) 100%
+    );
+}
