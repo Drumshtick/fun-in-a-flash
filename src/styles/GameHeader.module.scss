@@ -1,0 +1,37 @@
+.container {
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    .close {
+      font-size: 3em;
+      font-weight: 600;
+    }
+    .scoreTotalContainer {
+      display: flex;
+      flex-direction: column;
+      .scoreTotalLabel {
+        font-size: 1em;
+        font-weight: 800;
+        color: #fff5;
+        margin-bottom: 0;
+      }
+      .scoreTotalValue {
+        margin-top: 0em;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2.5em;
+        p {
+          margin: 0;
+          font-size: 3em;
+          font-weight: 600;
+        }
+      }
+      
+    }
+  }
+  
+}
