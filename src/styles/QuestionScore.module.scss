@@ -1,0 +1,20 @@
+.score {
+  position: absolute;
+  top: -0.6em;
+  left: 1.70em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: 50px;
+  padding: 0 0.4em;
+  color: rgb(68, 68, 68);
+  background-color: #fff;
+  border-radius: inherit;
+  font-weight: inherit;
+  p, svg {
+    font-size: 0.4em;
+    color: inherit;
+    font-weight: inherit;
+  }
+}
