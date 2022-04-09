@@ -40,7 +40,6 @@ const KeyboardInput = ({
   }, [ dispatch ]);
 
   const handleKeyPress = useCallback(e => {
-    console.log("FIRED")
     e.stopPropagation();
     const { key } = e;
     if (isNumber(key) && answer.length < MAX_CHAR) {
