@@ -1,6 +1,6 @@
 const initState = {
   answer: ''
-}
+};
 
 const inputReducer = (state = initState, action) => {
 
@@ -27,7 +27,7 @@ const inputReducer = (state = initState, action) => {
     'RESET_GUESS': () => {return { answer: state.answer = '' }}
   };
 
-  // console.log("new answer state:", !types[action.type] ? state : types[action.type]())
+  console.log("new answer state:", !types[action.type] ? state : types[action.type]())
   return !types[action.type] ? state : types[action.type]();
 };
 
