@@ -1,8 +1,7 @@
 import React from 'react';
-import dynamic from 'next/dynamic';
 import { connect } from 'react-redux';
 import styles from '../../styles/Play.module.scss';
-import { GameHeader } from './index';
+import { GameHeader, QuestionArea, GameInput } from './index';
 
 function mapStateToProps(state) {
   return {
@@ -15,6 +14,8 @@ const Play = () => {
   return (
     <div className={styles.container}>
       <GameHeader />
+      <QuestionArea />
+      <GameInput />
     </div>  
   );
 };
