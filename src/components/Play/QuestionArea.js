@@ -1,9 +1,8 @@
 import React, { useEffect, useCallback } from "react";
 import { connect } from 'react-redux';
-import { INPUT_NUMBER, DELETE_NUMBER, RESET_GUESS } from '../../redux/actions/InputActionTypes';
+import { RESET_GUESS } from '../../redux/actions/InputActionTypes';
 import styles from '../../styles/QuestionArea.module.scss';
-import StarsIcon from '@mui/icons-material/Stars';
-import { KeyboardInput } from './index';
+import { KeyboardInput, QuestionScore } from './index';
 
 function mapStateToProps(state) {
   return {
@@ -36,10 +35,7 @@ const QuestionArea = ({
 
   return (
     <div className={styles.container}>
-      <div className={styles.score}>
-        <p>200</p>
-        <StarsIcon />
-      </div>
+    <QuestionScore />
       <div className={styles.questionContainer}>
         <p>{value1}</p>
         <div>
