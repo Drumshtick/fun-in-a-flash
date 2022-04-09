@@ -13,7 +13,7 @@ function mapStateToProps(state) {
 }
 
 const keyboardLayout = {
-  default: ["1 2 3", "4 5 6", "7 8 9", "clear 0 .", "backspace"],
+  default: ["1 2 3", "4 5 6", "7 8 9", "clear 0 backspace"],
 };
 
 const GameInput = (props) => {
@@ -37,10 +37,9 @@ const GameInput = (props) => {
   }
 
   return (
-    <div>
+    <div className={styles.container}>
       <Keyboard
         className={styles.keyboard}
-        // onChange={onChange}
         onKeyPress={onKeyPress}
         theme={`hg-theme-default hg-layout-numeric numeric-theme ${styles.keyboard}`}
         buttonTheme={[
