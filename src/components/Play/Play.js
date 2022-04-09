@@ -6,14 +6,17 @@ import { NEW_QUESTION } from '../../redux/actions/addendActionTypes';
 import { RESET_GUESS } from '../../redux/actions/InputActionTypes';
 import { CORRECT_ANSWER } from '../../redux/actions/correctActionTypes';
 import { DECREASE_SCORE, RESET_SCORE } from '../../redux/actions/scoreActionTypes';
-import sleep from '../../helpers/sleep';
-import clearSleepIds from '../../helpers/clearSleepIds';
+import { INCREASE_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
+import { INCREASE_QUESTION_COUNT } from '../../redux/actions/questionActionTypes';
+import { SET_INTERVAL_ID, CLEAR_INTERVAL_ID } from '../../redux/actions/intervalActionTypes';
+
 const CONSTANTS = {
-  'INITIAL_SCORE': parseInt(process.env.NEXT_PUBLIC_INITIAL_SCORE),
-  'REDUCE_SCORE_BY': parseInt(process.env.NEXT_PUBLIC_REDUCE_SCORE_BY),
-  'REDUCE_INTERVAL': parseInt(process.env.NEXT_PUBLIC_REDUCE_INTERVAL),
-  'TOTAL_INTERVALS': () => {
-    return this['INITIAL_SCORE'] / this['REDUCE_SCORE_BY']
+  TOTAL_QUESTIONS: parseInt(process.env.NEXT_PUBLIC_TOTAL_QUESTIONS),
+  INITIAL_SCORE: parseInt(process.env.NEXT_PUBLIC_INITIAL_SCORE),
+  REDUCE_SCORE_BY: parseInt(process.env.NEXT_PUBLIC_REDUCE_SCORE_BY),
+  REDUCE_INTERVAL: parseInt(process.env.NEXT_PUBLIC_REDUCE_INTERVAL),
+  TOTAL_INTERVALS: function() {
+    return CONSTANTS.INITIAL_SCORE / CONSTANTS.REDUCE_SCORE_BY;
   }
 }
 
@@ -22,7 +25,10 @@ function mapStateToProps(state) {
     value1: state.addend.value1,
     value2: state.addend.value2,
     answer: state.input.answer,
-    score: state.score.score
+    score: state.score.score,
+    totalScore: state.totalScore.totalScore,
+    questionNumber: state.question.questionNumber,
+    interval: state.interval.ID
   };
 }
 
@@ -30,60 +36,74 @@ const Play = ({
   dispatch,
   answer,
   value1,
-  value2
+  value2,
+  questionNumber,
+  score,
+  totalScore,
+  interval,
 }) => {
-
-  const scoreDropper = useCallback(() => {
-    const { TOTAL_INTERVALS, REDUCE_INTERVAL  } = CONSTANTS
-    const sleepIds = [];
-    for (let i = 0; i < TOTAL_INTERVALS; i++) {
-      const sleepId = sleep(REDUCE_INTERVAL * (i + 1) )
-      .then(() => {
-        dispatch(DECREASE_SCORE());
-      });
-      sleepIds.push(sleepId);
-    }
-    return sleepIds
+  const scoreDropper = useCallback(async () => {
+    const { REDUCE_INTERVAL } = CONSTANTS;
+    const intervalID = setInterval(() => {
+      dispatch(DECREASE_SCORE());
+    }, REDUCE_INTERVAL);
+    dispatch(SET_INTERVAL_ID(intervalID));
   }, [ dispatch ])
 
 
-
-
-
-  useEffect(() => {
-    const startQuestions = () => {
-      console.log("HERE");
-      dispatch(RESET_SCORE());
-      dispatch(NEW_QUESTION());
-      const sleepIds = scoreDropper();
-      return sleepIds;
-    };
-
-    var sleepIds = startQuestions()
-    return () => {
-      clearSleepIds(sleepIds);
+  const startQuestions = useCallback(() => {
+    if (interval) {
+      clearInterval(interval);
+      dispatch(CLEAR_INTERVAL_ID());
     }
-  }, [ dispatch, scoreDropper ]);
+    if (score !== CONSTANTS.INITIAL_SCORE) dispatch(RESET_SCORE());
+    dispatch(INCREASE_QUESTION_COUNT())
+    dispatch(NEW_QUESTION());
+    scoreDropper();
+  }, [ dispatch, scoreDropper, score ]);
+
+  const newQuestion = useCallback(() => {
+    if (interval) {
+      clearInterval(interval);
+      dispatch(CLEAR_INTERVAL_ID());
+    }
+    dispatch(CORRECT_ANSWER());
+    dispatch(INCREASE_TOTAL_SCORE(score));
+    if (score !== CONSTANTS.INITIAL_SCORE) dispatch(RESET_SCORE());
+    dispatch(INCREASE_QUESTION_COUNT());
+    dispatch(NEW_QUESTION());
+    dispatch(RESET_GUESS());
+    scoreDropper();
+  }, [ dispatch, score, scoreDropper ]);
 
   useEffect(() => {
+    // Start Game
+    if (questionNumber === 0) {
+      startQuestions();
+    }
+  }, [ dispatch, scoreDropper, questionNumber, startQuestions, totalScore ]);
 
-    const newQuestion = () => {
-      dispatch(CORRECT_ANSWER());
-      dispatch(NEW_QUESTION());
-      dispatch(RESET_GUESS());
-      return scoreDropper();
-    };
-
+  useEffect(() => {
+    // On correct answer
     if (parseInt(answer) === parseInt(value1) + parseInt(value2)) {
       console.log('CORRECT!');
-      var sleepIds = newQuestion();
+      newQuestion();
       return;
     }
     console.log('INCORRECT');
-    return () => {
-      clearSleepIds(sleepIds);
+  }, [ answer, value1, value2, dispatch, scoreDropper, score, newQuestion ]);
+
+  useEffect(() => {
+    if (score <= 0) {
+      newQuestion();
     }
-  }, [ answer, value1, value2, dispatch, scoreDropper ]);
+  }, [ score, newQuestion ])
+
+  useEffect(() => {
+    if (questionNumber >= CONSTANTS.TOTAL_QUESTIONS) {
+      console.log("GAME ENDED")
+    }
+  }, [ questionNumber ]);
 
   return (
     <div className={styles.container}>
