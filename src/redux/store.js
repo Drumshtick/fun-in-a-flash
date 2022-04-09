@@ -6,7 +6,8 @@ import {
   scoreReducer,
   questionReducer,
   totalScoreReducer,
-  intervalReducer
+  intervalReducer,
+  viewReducer,
 } from './reducers/index';
 const rootReducer = combineReducers({
     input: inputReducer,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
     score: scoreReducer,
     totalScore: totalScoreReducer,
     question: questionReducer,
-    interval: intervalReducer
+    interval: intervalReducer,
+    view: viewReducer,
 });
 
 export const store = createStore(rootReducer);

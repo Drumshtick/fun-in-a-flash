@@ -5,3 +5,4 @@ export { default as scoreReducer } from './scoreReducer';
 export { default as questionReducer } from './questionReducer';
 export { default as totalScoreReducer } from './totalScoreReducer';
 export { default as intervalReducer } from './intervalReducer';
+export { default as viewReducer } from './viewReducer';
