@@ -30,21 +30,4 @@
       }
     }
   }
-  .questionField {
-    color: #444;
-    font-size: 1em;
-    font-weight: 700;
-    text-align: right;
-    border: none;
-    border-bottom: 1px solid #444;
-    width: 50%;
-    margin: 0 0.5em 0.5em;
-  }
-  .questionField:focus-visible {
-    outline: none;
-    border: none;
-  }
-  .questionField:focus {
-    outline: none;
-  }
 }

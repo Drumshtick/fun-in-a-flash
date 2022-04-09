@@ -1,0 +1,17 @@
+.questionField {
+  color: transparent;
+  text-shadow: 0 0 0 #444;
+  font-size: 1em;
+  font-weight: 700;
+  text-align: right;
+  border: none;
+  width: 70%;
+  margin: 0 0.5em;
+}
+.questionField:focus-visible {
+  outline: none;
+  border: none;
+}
+.questionField:focus {
+  outline: none;
+}
