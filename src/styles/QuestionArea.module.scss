@@ -1,5 +1,5 @@
 .container {
-  height: 45%;
+  height: 40%;
   width: 80%;
   background-color: #fff;
   margin: 0em 0;
@@ -11,6 +11,7 @@
   color: #444;
   font-size: 4em;
   font-weight: 700;
+  position: relative;
   .questionContainer {
     border-bottom: 6px solid #444;
     width: 82%;
@@ -31,3 +32,23 @@
     }
   }
 }
+  .score {
+    position: absolute;
+    top: -0.6em;
+    left: 1.70em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 50px;
+    padding: 0 0.4em;
+    color: rgb(68, 68, 68);
+    background-color: #fff;
+    border-radius: inherit;
+    font-weight: inherit;
+    p, svg {
+      font-size: 0.4em;
+      color: inherit;
+      font-weight: inherit;
+    }
+  }
