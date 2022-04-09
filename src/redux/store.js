@@ -2,12 +2,14 @@ import { createStore, combineReducers } from 'redux';
 import {
   inputReducer,
   addendReducer,
-  correctReducer
+  correctReducer,
+  scoreReducer,
 } from './reducers/index';
 const rootReducer = combineReducers({
     input: inputReducer,
     addend: addendReducer,
-    answerCorrect: correctReducer
+    answerCorrect: correctReducer,
+    score: scoreReducer
 });
 
 export const store = createStore(rootReducer);
