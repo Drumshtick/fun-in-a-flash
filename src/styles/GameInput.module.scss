@@ -1,8 +1,15 @@
-.keyboard {
-  color: #fff;
-  font-family: inherit;
-  background-color: #333;
+.container {
+    width: 100%;
+    .keyboard {
+    color: #fff;
+    font-family: inherit;
+    background-color: #333;
+    border-radius: 0px;
+    padding: 0;
+    width: 100%;
+  }
 }
+
 
 .btn {
   height: 43px !important;
@@ -15,6 +22,7 @@
   background-image: url('/icons/backspace.svg') !important;
   color: #fff0;
   border-bottom: 1px solid #000000 !important;
+  height: 43px !important;
   margin: 0.1em !important;
   background-color: #444 !important;
   background-repeat: no-repeat !important;
