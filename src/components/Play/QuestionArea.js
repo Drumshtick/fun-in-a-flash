@@ -1,27 +1,47 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 import { connect } from 'react-redux';
+import { INPUT_NUMBER, DELETE_NUMBER, RESET_GUESS } from '../../redux/actions/InputActionTypes';
 import styles from '../../styles/QuestionArea.module.scss';
+import { KeyboardInput } from './index';
 
 function mapStateToProps(state) {
   return {
-    answer: state.answer
+    answer: state.input.answer,
+    value1: state.addend.value1,
+    value2: state.addend.value2,
+    correct: state.answerCorrect.correct
   };
 }
 
-const QuestionArea = (props) => {
-  console.log(props.answer)
+
+
+const QuestionArea = ({
+  dispatch,
+  value1,
+  value2,
+  correct
+}) => {
+
+
+
+
+  useEffect(() => {
+    if (correct) {
+      dispatch(RESET_GUESS());
+    }
+  }, [ correct, dispatch ])
+
+
+
   return (
     <div className={styles.container}>
       <div className={styles.questionContainer}>
-        <p>38</p>
+        <p>{value1}</p>
         <div>
-          <span>+</span><p>22</p>
+          <span>+</span><p>{value2}</p>
         </div>
       </div>
-      <input
-        className={styles.questionField}
-        value={props.answer}
-      />
+      <KeyboardInput />
     </div>
   );
 };
