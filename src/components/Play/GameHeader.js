@@ -14,24 +14,22 @@ function mapStateToProps(state) {
 
 const GameHeader = () => {
   return (
-    <div className={styles.container}>
-      <header>
-        <CloseIcon className={styles.close} />
-        <div className={styles.scoreTotalContainer}>
-          <p className={styles.scoreTotalLabel}>SCORE</p>
-          <div className={styles.scoreTotalValue}>
-            <p>1074</p>
-            <StarsIcon />
-          </div>
+    <header className={styles.container}>
+      <CloseIcon className={styles.close} />
+      <div className={styles.scoreTotalContainer}>
+        <p className={styles.scoreTotalLabel}>SCORE</p>
+        <div className={styles.scoreTotalValue}>
+          <p>1074</p>
+          <StarsIcon />
         </div>
-        <div className={styles.scoreTotalContainer}>
-          <p className={styles.scoreTotalLabel}>QUESTION</p>
-          <div className={styles.scoreTotalValue}>
-            <p>5/6</p>
-          </div>
+      </div>
+      <div className={styles.scoreTotalContainer}>
+        <p className={styles.scoreTotalLabel}>QUESTION</p>
+        <div className={styles.scoreTotalValue}>
+          <p>5/6</p>
         </div>
-      </header>
-    </div>
+      </div>
+    </header>
   );
 };
 

@@ -1,41 +1,42 @@
+
 .container {
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
-    .close {
-      font-size: 3em;
-      font-weight: 600;
-    }
-    .scoreTotalContainer {
-      display: flex;
-      flex-direction: column;
-      .scoreTotalLabel {
-        font-size: 1em;
-        font-weight: 800;
-        color: #fff5;
-        margin-bottom: 0;
-      }
-      .scoreTotalValue {
-        margin-top: 0em;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-evenly;
-        margin-bottom: 2.5em;
-        p {
-          margin: 0;
-          font-size: 3em;
-          font-weight: 600;
-        }
-        svg {
-          margin-left: 0.25em;
-          font-size: 2em;
-        }
-      }
-      
-    }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  padding: 0 1em;
+  width: 100%;
+  .close {
+    font-size: 3em;
+    font-weight: 600;
   }
-  
+  .scoreTotalContainer {
+    display: flex;
+    flex-direction: column;
+    .scoreTotalLabel {
+      font-size: 1em;
+      font-weight: 800;
+      color: #fff5;
+      margin-bottom: 0;
+    }
+    .scoreTotalValue {
+      margin-top: 0em;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-evenly;
+      margin-bottom: 1em;
+      p {
+        margin: 0;
+        font-size: 3em;
+        font-weight: 600;
+      }
+      svg {
+        margin-left: 0.25em;
+        font-size: 2em;
+      }
+    }
+    
+  }
 }
+
