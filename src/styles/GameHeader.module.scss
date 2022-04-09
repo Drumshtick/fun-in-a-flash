@@ -22,12 +22,16 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: center;
+        justify-content: space-evenly;
         margin-bottom: 2.5em;
         p {
           margin: 0;
           font-size: 3em;
           font-weight: 600;
+        }
+        svg {
+          margin-left: 0.25em;
+          font-size: 2em;
         }
       }
       

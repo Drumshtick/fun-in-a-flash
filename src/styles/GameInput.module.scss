@@ -1,0 +1,23 @@
+.keyboard {
+  color: #fff;
+  font-family: inherit;
+  background-color: #333;
+}
+
+.btn {
+  height: 43px !important;
+  background-color: #444 !important;
+  // Min recommended button size
+  margin: 0.1em !important;
+  border-bottom: 1px solid #000000 !important;
+}
+.backBtn {
+  background-image: url('/icons/backspace.svg') !important;
+  color: #fff0;
+  border-bottom: 1px solid #000000 !important;
+  margin: 0.1em !important;
+  background-color: #444 !important;
+  background-repeat: no-repeat !important;
+  background-position: 48% 50% !important;
+  background-size: 30px 30px !important;
+}
