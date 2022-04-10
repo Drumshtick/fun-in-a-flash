@@ -19,9 +19,9 @@ const QuestionArea = ({
   dispatch,
   value1,
   value2,
-  correct
+  correct,
+  reviewState
 }) => {
-
 
 
 
@@ -35,14 +35,14 @@ const QuestionArea = ({
 
   return (
     <div className={styles.container}>
-    <QuestionScore />
+      <QuestionScore reviewScore={reviewState && reviewState.score} />
       <div className={styles.questionContainer}>
-        <p>{value1}</p>
+        <p>{reviewState ? reviewState.value1 : value1}</p>
         <div>
-          <span>+</span><p>{value2}</p>
+          <span>+</span><p>{reviewState ? reviewState.value2 : value2}</p>
         </div>
       </div>
-      <KeyboardInput />
+      <KeyboardInput reviewAnswer={reviewState && reviewState.answer} />
     </div>
   );
 };

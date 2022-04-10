@@ -14,7 +14,8 @@ function mapStateToProps(state) {
 
 const KeyboardInput = ({
   answer,
-  dispatch
+  dispatch,
+  reviewAnswer
 }) => {
 
   const formatValue = (value) => {
@@ -48,7 +49,7 @@ const KeyboardInput = ({
   }, [ dispatch, answer ])
 
   useEffect(() => {
-    if (typeof window !== undefined) {
+    if (reviewAnswer && typeof window !== undefined) {
       window.addEventListener('keydown', handleKeyDown);
       window.addEventListener('keypress', handleKeyPress);
     }
@@ -63,7 +64,7 @@ const KeyboardInput = ({
       type="text"
       readOnly
       className={styles.questionField}
-      value={formatValue(answer)}
+      value={reviewAnswer ? reviewAnswer : formatValue(answer)}
       onKeyDown={e => handleKeyDown(e)}
       onKeyPress={e => handleKeyPress(e)}
       ref={element => element && element.focus()}

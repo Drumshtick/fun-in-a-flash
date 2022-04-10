@@ -9,10 +9,10 @@ function mapStateToProps(state) {
   };
 }
 
-const QuestionScore = ({ score }) => {
+const QuestionScore = ({ score, reviewScore }) => {
   return (
     <div className={styles.score}>
-      <p>{score}</p>
+      <p>{reviewScore ? reviewScore : score}</p>
       <StarsIcon />
     </div>
   );
