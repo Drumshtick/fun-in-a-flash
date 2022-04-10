@@ -9,6 +9,9 @@ import {
   intervalReducer,
   viewReducer,
   accuracyReducer,
+  setResultsReducer,
+  openReviewReducer,
+  activeResultReducer
 } from './reducers/index';
 const rootReducer = combineReducers({
     input: inputReducer,
@@ -20,6 +23,9 @@ const rootReducer = combineReducers({
     interval: intervalReducer,
     view: viewReducer,
     accuracy: accuracyReducer,
+    results: setResultsReducer,
+    activeResult: activeResultReducer,
+    openReview: openReviewReducer
 });
 
 export const store = createStore(rootReducer);
