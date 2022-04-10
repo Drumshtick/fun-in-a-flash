@@ -11,6 +11,9 @@ import styles from '../../styles/GameInfo.module.scss';
 import { QuestionArea } from '../Play/index';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
+import CheckIcon from '@mui/icons-material/Check';
+
 const mapStateToProps = (state) => {
   return {
     view: state.view.view,
@@ -18,7 +21,8 @@ const mapStateToProps = (state) => {
     accuracy: state.accuracy.correct,
     openReview: state.openReview.open,
     results: state.results.results,
-    activeResult: state.activeResult.active
+    activeResult: state.activeResult.active,
+    highScore: state.highScore.highScore
   };
 }
 
@@ -30,7 +34,8 @@ const GameInfo = ({
   accuracy,
   openReview,
   results,
-  activeResult
+  activeResult,
+  highScore
 }) => {
   const maxResult = results.length;
   console.log('maxResult: ', maxResult);
@@ -71,6 +76,7 @@ const GameInfo = ({
           view={view}
           totalScore={totalScore}
           accuracy={accuracy}
+          highScore={highScore}
         />
         ) : (
           <div className={styles.reviewContainer}>
@@ -88,6 +94,11 @@ const GameInfo = ({
             >
               <ArrowLeftIcon />
             </Button>
+            <div
+              className={results[activeResult].answer === '' ? styles.isIncorrect : styles.isCorrect}
+            >
+              {results[activeResult].answer === '' ? <DoNotDisturbIcon /> : <CheckIcon />}
+            </div>
           </div>
         )
       }

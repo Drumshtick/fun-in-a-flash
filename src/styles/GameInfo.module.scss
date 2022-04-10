@@ -40,6 +40,24 @@
     .disabled {
       display: none;
     }
+    .isCorrect {
+      position: absolute;
+      top: 70%;
+      left: 20%;
+      svg {
+        font-size: 3em;
+        color: rgb(17, 218, 17);
+      }
+    }
+    .isIncorrect {
+      position: absolute;
+      top: 70%;
+      left: 20%;
+      svg {
+        font-size: 3em;
+        color: #fb4b4b;
+      }
+    }
   }
   .playButtonContainer {
     position: absolute;

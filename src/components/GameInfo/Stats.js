@@ -4,7 +4,12 @@ import styles from '../../styles/Stats.module.scss';
 
 const TOTAL_QUESTIONS = process.env.NEXT_PUBLIC_TOTAL_QUESTIONS
 
-const Stats = ({ view, accuracy }) => {
+const Stats = ({
+  view,
+  accuracy,
+  totalScore,
+  highScore,
+}) => {
   return (
     <div
       className={view === 'welcome' ? styles.welcomeContainer : styles.doneContainer}
@@ -19,7 +24,7 @@ const Stats = ({ view, accuracy }) => {
           }
       </p>
       <div className={styles.scoreValue}>
-        <h2>1208</h2>
+        <h2>{view === 'welcome' ? highScore : totalScore}</h2>
         <StarsIcon />
       </div>
       <p className={styles.scoreLabel}>
