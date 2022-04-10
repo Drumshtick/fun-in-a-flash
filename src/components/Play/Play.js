@@ -91,6 +91,10 @@ const Play = ({
   }, [ dispatch, score, scoreDropper ]);
 
   const submitAnswer = async () => {
+    if (interval) {
+      clearInterval(interval);
+      dispatch(CLEAR_INTERVAL_ID());
+    }
     const correct = parseInt(answer) === parseInt(value1) + parseInt(value2);
     if (correct) {
       dispatch(INCREASE_TOTAL_SCORE(score));
