@@ -1,48 +1,44 @@
-import React, { useEffect, useCallback } from "react";
+import React from "react";
 import { connect } from 'react-redux';
-import { RESET_GUESS } from '../../redux/actions/InputActionTypes';
+import { KeyboardInput, QuestionScore, EnterAnswer, ResultPrompt } from './index';
 import styles from '../../styles/QuestionArea.module.scss';
-import { KeyboardInput, QuestionScore } from './index';
 
 function mapStateToProps(state) {
   return {
     answer: state.input.answer,
     value1: state.addend.value1,
     value2: state.addend.value2,
-    correct: state.answerCorrect.correct
+    correct: state.answerCorrect.correct,
+    view: state.view.view
   };
 }
 
 
 
 const QuestionArea = ({
-  dispatch,
   value1,
   value2,
-  correct,
-  reviewState
+  reviewState,
+  submitAnswer,
+  view,
+  correct
 }) => {
-
-
-
-  useEffect(() => {
-    if (correct) {
-      dispatch(RESET_GUESS());
-    }
-  }, [ correct, dispatch ])
-
-
 
   return (
     <div className={styles.container}>
-      <QuestionScore reviewScore={reviewState && reviewState.score} />
+      <QuestionScore reviewScore={view === 'done' && reviewState.score} />
+      {correct !== null && <ResultPrompt correct={correct} />}
+      {!reviewState && <EnterAnswer submitAnswer={submitAnswer} />}
       <div className={styles.questionContainer}>
         <p>{reviewState ? reviewState.value1 : value1}</p>
         <div>
           <span>+</span><p>{reviewState ? reviewState.value2 : value2}</p>
         </div>
       </div>
-      <KeyboardInput reviewAnswer={reviewState && reviewState.answer} />
+      <KeyboardInput
+        reviewAnswer={reviewState && reviewState.answer}
+        submitAnswer={submitAnswer}
+      />
     </div>
   );
 };

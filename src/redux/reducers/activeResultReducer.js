@@ -10,7 +10,7 @@ const activeResultReducer = (state = initState, action) => {
     'PREV_RESULT': () => {
       return { active: state.active - 1 };
     },
-    'RESET_ACTIVE': () => {
+    'RESET_ACTIVE_RESULT': () => {
       return { active: initState.active };
     }
   };

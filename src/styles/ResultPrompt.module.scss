@@ -1,0 +1,14 @@
+.container {
+  position: absolute;
+  top: 65%;
+  left: 10%;
+  svg {
+    font-size: 1em;
+  }
+  .correct {
+    color: rgb(17, 218, 17);
+  }
+  .incorrect {
+    color: #fb4b4b;
+  }
+}

@@ -1,5 +1,5 @@
 const initState = {
-  view: 'done'
+  view: 'welcome'
 };
 
 const viewReducer = (state = initState, action) => {

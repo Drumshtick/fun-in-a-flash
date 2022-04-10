@@ -6,13 +6,14 @@ import styles from '../../styles/QuestionScore.module.scss';
 function mapStateToProps(state) {
   return {
     score: state.score.score,
+    view: state.view.view
   };
 }
 
-const QuestionScore = ({ score, reviewScore }) => {
+const QuestionScore = ({ score, reviewScore, view }) => {
   return (
     <div className={styles.score}>
-      <p>{reviewScore ? reviewScore : score}</p>
+      <p>{view === 'done' ? reviewScore : score}</p>
       <StarsIcon />
     </div>
   );

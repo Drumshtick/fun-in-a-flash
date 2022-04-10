@@ -6,9 +6,12 @@
   flex-direction: row;
   padding: 0 1em;
   width: 100%;
-  .close {
-    font-size: 3em;
-    font-weight: 600;
+  button.leaveGameButton {
+    .close {
+      color: #fff;
+      font-size: 3em;
+      font-weight: 600;
+    }
   }
   .scoreTotalContainer {
     display: flex;

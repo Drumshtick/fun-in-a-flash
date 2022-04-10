@@ -1,18 +1,5 @@
 const initState = {
-  results: [
-  {
-    value1: 13,
-    value2: 6,
-    answer: 19,
-    score: 180
-  },
-  {
-    value1: 12,
-    value2: 5,
-    answer: 17,
-    score: 170
-  }
-  ]
+  results: []
 };
 
 const setResultsReducer = (state = initState, action) => {
@@ -23,7 +10,7 @@ const setResultsReducer = (state = initState, action) => {
     };
   }
 
-  if (action.type === 'RESET_QUESTIONS') {
+  if (action.type === 'RESET_RESULTS') {
     return {
       results: initState.results
     };

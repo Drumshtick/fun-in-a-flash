@@ -12,7 +12,8 @@ import {
   setResultsReducer,
   openReviewReducer,
   activeResultReducer,
-  highScoreReducer
+  highScoreReducer,
+  newHighScoreReducer
 } from './reducers/index';
 
 const rootReducer = combineReducers({
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
     activeResult: activeResultReducer,
     openReview: openReviewReducer,
     highScore: highScoreReducer,
+    madeHighScore: newHighScoreReducer
 });
 
 export const store = createStore(rootReducer);

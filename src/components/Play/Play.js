@@ -4,7 +4,7 @@ import styles from '../../styles/Play.module.scss';
 import { GameHeader, QuestionArea, OnscreenInput } from './index';
 import { NEW_QUESTION } from '../../redux/actions/addendActionTypes';
 import { RESET_GUESS } from '../../redux/actions/InputActionTypes';
-import { CORRECT_ANSWER } from '../../redux/actions/correctActionTypes';
+import { CORRECT_ANSWER, RESET_CORRECT, INCORRECT_ANSWER } from '../../redux/actions/correctActionTypes';
 import { DECREASE_SCORE, RESET_SCORE } from '../../redux/actions/scoreActionTypes';
 import { INCREASE_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
 import { INCREASE_QUESTION_COUNT } from '../../redux/actions/questionActionTypes';
@@ -12,7 +12,9 @@ import { SET_INTERVAL_ID, CLEAR_INTERVAL_ID } from '../../redux/actions/interval
 import { INCREASE_ACCURACY } from '../../redux/actions/accuracyActionTypes';
 import { SWITCH_VIEW_TO_DONE } from '../../redux/actions/viewActionTypes';
 import { PUSH_QUESTION } from '../../redux/actions/setResultsActionTypes';
-
+import { SET_HIGH_SCORE } from '../../redux/actions/highScoreActionTypes';
+import { NEW_HIGH_SCORE, NEW_HIGH_SCORE_RESET } from '../../redux/actions/newHighScoreActionTypes.js';
+import sleep from '../../helpers/sleep';
 const CONSTANTS = {
   TOTAL_QUESTIONS: parseInt(process.env.NEXT_PUBLIC_TOTAL_QUESTIONS),
   INITIAL_SCORE: parseInt(process.env.NEXT_PUBLIC_INITIAL_SCORE),
@@ -31,7 +33,9 @@ function mapStateToProps(state) {
     score: state.score.score,
     totalScore: state.totalScore.totalScore,
     questionNumber: state.question.questionNumber,
-    interval: state.interval.ID
+    interval: state.interval.ID,
+    highScore: state.highScore.highScore,
+    answerCorrect: state.answerCorrect.correct
   };
 }
 
@@ -44,18 +48,26 @@ const Play = ({
   score,
   totalScore,
   interval,
+  highScore,
+  answerCorrect
 }) => {
   const scoreDropper = useCallback(async () => {
+    if (interval) {
+      clearInterval(interval);
+      dispatch(CLEAR_INTERVAL_ID());
+    }
     const { REDUCE_INTERVAL } = CONSTANTS;
     const intervalID = setInterval(() => {
       dispatch(DECREASE_SCORE());
     }, REDUCE_INTERVAL);
+
     dispatch(SET_INTERVAL_ID(intervalID));
   }, [ dispatch ])
 
 
   const startQuestions = useCallback(() => {
     // first question
+    dispatch(NEW_HIGH_SCORE_RESET());
     if (interval) {
       clearInterval(interval);
       dispatch(CLEAR_INTERVAL_ID());
@@ -71,14 +83,37 @@ const Play = ({
       clearInterval(interval);
       dispatch(CLEAR_INTERVAL_ID());
     }
-    dispatch(CORRECT_ANSWER());
-    dispatch(INCREASE_TOTAL_SCORE(score));
     if (score !== CONSTANTS.INITIAL_SCORE) dispatch(RESET_SCORE());
     dispatch(INCREASE_QUESTION_COUNT());
     dispatch(NEW_QUESTION());
     dispatch(RESET_GUESS());
     scoreDropper();
   }, [ dispatch, score, scoreDropper ]);
+
+  const submitAnswer = async () => {
+    const correct = parseInt(answer) === parseInt(value1) + parseInt(value2);
+    if (correct) {
+      dispatch(INCREASE_TOTAL_SCORE(score));
+      dispatch(INCREASE_ACCURACY());
+      dispatch(CORRECT_ANSWER());
+      await sleep(2000);
+    }
+    if (!correct) {
+      dispatch(INCORRECT_ANSWER());
+      await sleep(2000);
+    }
+    dispatch(RESET_CORRECT());
+    dispatch(PUSH_QUESTION({
+      value1,
+      value2,
+      answer,
+      score: correct ? score : 0,
+      correct
+    }));
+    dispatch
+    newQuestion();
+    return;
+  };
 
   useEffect(() => {
     // Start Game
@@ -87,37 +122,36 @@ const Play = ({
     }
   }, [ dispatch, scoreDropper, questionNumber, startQuestions, totalScore ]);
 
-  useEffect(() => {
-    // On correct answer
-    if (parseInt(answer) === parseInt(value1) + parseInt(value2)) {
-      console.log('CORRECT!');
-      dispatch(INCREASE_ACCURACY());
-      dispatch(PUSH_QUESTION({
-        value1,
-        value2,
-        answer,
-        score
-      }));
-      newQuestion();
-      return;
-    }
-    console.log('INCORRECT');
-  }, [ answer, value1, value2, dispatch, scoreDropper, score, newQuestion ]);
-
-  useEffect(() => {
+  useEffect(async () => {
     if (score <= 0) {
+      if (interval) {
+        clearInterval(interval);
+        dispatch(CLEAR_INTERVAL_ID());
+      }
+      dispatch(INCORRECT_ANSWER());
+      await sleep(2000);
+      dispatch(RESET_CORRECT());
       newQuestion();
       dispatch(PUSH_QUESTION({
         value1,
         value2,
         answer,
-        score: 0
+        score: 0,
+        correct: false
       }));
     }
   }, [ score, newQuestion ])
 
   useEffect(() => {
-    if (questionNumber >= CONSTANTS.TOTAL_QUESTIONS) {
+    if (questionNumber > CONSTANTS.TOTAL_QUESTIONS) {
+      if (highScore < totalScore) {
+        dispatch(NEW_HIGH_SCORE());
+        dispatch(SET_HIGH_SCORE(totalScore));
+      }
+      if (interval) {
+        clearInterval(interval);
+        dispatch(CLEAR_INTERVAL_ID());
+      }
       dispatch(SWITCH_VIEW_TO_DONE());
     }
   }, [ questionNumber ]);
@@ -125,7 +159,7 @@ const Play = ({
   return (
     <div className={styles.container}>
       <GameHeader />
-      <QuestionArea />
+      <QuestionArea submitAnswer={submitAnswer} />
       <OnscreenInput />
     </div>  
   );

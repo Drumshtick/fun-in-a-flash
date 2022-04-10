@@ -27,13 +27,17 @@ const Stats = ({
         <h2>{view === 'welcome' ? highScore : totalScore}</h2>
         <StarsIcon />
       </div>
-      <p className={styles.scoreLabel}>
-        CORRECT ANSWERS
-      </p>
-      <div className={styles.accuracy}>
-        <h2>{accuracy}/{TOTAL_QUESTIONS}</h2>
-        <StarsIcon />
-      </div>
+      {view === 'done' && (
+        <p className={styles.scoreLabel}>
+          CORRECT ANSWERS
+        </p>
+      )}
+      {view === 'done' && (
+        <div className={styles.accuracy}>
+          <h2>{accuracy}/{TOTAL_QUESTIONS}</h2>
+          <StarsIcon />
+        </div>
+      )}
     </div>
   );
 };

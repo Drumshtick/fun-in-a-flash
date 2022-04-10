@@ -1,5 +1,5 @@
 const initState = {
-  correct: false
+  correct: null
 }
 
 const correctReducer = (state = initState, action) => {
@@ -10,6 +10,10 @@ const correctReducer = (state = initState, action) => {
 
   if (action.type === 'INCORRECT_ANSWER') {
     return { correct: false };
+  }
+
+  if (action.type === 'RESET_CORRECT') {
+    return { correct: initState.correct };
   }
 
   return state;

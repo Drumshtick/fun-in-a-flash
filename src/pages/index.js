@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { CLEAR_INTERVAL_ID } from '../redux/actions/intervalActionTypes';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import styles from '../styles/Home.module.scss';
@@ -9,11 +10,20 @@ const Play = dynamic(() => import('../components/Play/Play'));
 
 const mapStateToProps = (state) => {
   return {
-    view: state.view.view
+    view: state.view.view,
+    interval: state.interval.ID
   }
 };
 
-const Home = ({ view }) => {
+const Home = ({ view, interval, dispatch }) => {
+
+  useEffect(() => {
+    if (view !== 'play') {
+      clearInterval(interval);
+      dispatch(CLEAR_INTERVAL_ID());
+    }
+  })
+
   return (
     <div className={styles.gameContainer}>
       <Head>
