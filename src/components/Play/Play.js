@@ -9,7 +9,8 @@ import { DECREASE_SCORE, RESET_SCORE } from '../../redux/actions/scoreActionType
 import { INCREASE_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
 import { INCREASE_QUESTION_COUNT } from '../../redux/actions/questionActionTypes';
 import { SET_INTERVAL_ID, CLEAR_INTERVAL_ID } from '../../redux/actions/intervalActionTypes';
-
+import { INCREASE_ACCURACY } from '../../redux/actions/accuracyActionTypes';
+import { SWITCH_VIEW_TO_DONE } from '../../redux/actions/viewActionTypes';
 const CONSTANTS = {
   TOTAL_QUESTIONS: parseInt(process.env.NEXT_PUBLIC_TOTAL_QUESTIONS),
   INITIAL_SCORE: parseInt(process.env.NEXT_PUBLIC_INITIAL_SCORE),
@@ -87,6 +88,7 @@ const Play = ({
     // On correct answer
     if (parseInt(answer) === parseInt(value1) + parseInt(value2)) {
       console.log('CORRECT!');
+      dispatch(INCREASE_ACCURACY());
       newQuestion();
       return;
     }
@@ -101,7 +103,7 @@ const Play = ({
 
   useEffect(() => {
     if (questionNumber >= CONSTANTS.TOTAL_QUESTIONS) {
-      console.log("GAME ENDED")
+      dispatch(SWITCH_VIEW_TO_DONE());
     }
   }, [ questionNumber ]);
 
