@@ -1,35 +1,38 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import StarsIcon from '@mui/icons-material/Stars';
+import { SWITCH_VIEW_TO_PLAY } from '../../redux/actions/viewActionTypes';
 import CasinoIcon from '@mui/icons-material/Casino';
 import { Button } from '@mui/material';
+import { InfoHeader, Stats } from './index';
 import styles from '../../styles/GameInfo.module.scss';
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
-    // State needed in StartGame here
-    // count: state.count
+    view: state.view.view,
+    totalScore: state.totalScore.totalScore,
+    accuracy: state.accuracy.correct
   };
 }
 
 
-const GameInfo = () => {
+const GameInfo = ({ view, dispatch, totalScore, accuracy }) => {
+
+  const handleClick = () => {
+    dispatch(SWITCH_VIEW_TO_PLAY());
+  };
+
   return (
     <div className={styles.mainContainer}>
-      <div className={styles.header}>
-        <p>Fun in a flash:</p>
-        <h1>Math Cards!</h1>
-      </div>
-      <div className={styles.highScoreContainer}>
-        <p className={styles.highScoreLabel}>CURRENT HIGH SCORE</p>
-        <div className={styles.highScoreValue}>
-          <h2>1208</h2>
-          <StarsIcon />
-        </div>
-      </div>
+      <InfoHeader view={view} />
+      <Stats
+        view={view}
+        totalScore={totalScore}
+        accuracy={accuracy}
+      />
       <div className={styles.playButtonContainer}>
         <Button
           className={styles.playButton}
+          onClick={handleClick}
         >
           start game
           <CasinoIcon />

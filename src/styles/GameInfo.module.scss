@@ -4,44 +4,6 @@
   justify-content: space-between;
   flex-direction: column;
   height: 100%;
-  .header {
-    p {
-      font-size: 2em;
-      margin-bottom: 0;
-    }
-    h1 {
-      margin-top: 0;
-      margin-left: 0.5em;
-      font-size: 3em;
-
-    }
-  }
-  .highScoreContainer {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: flex-start;
-    .highScoreLabel {
-      font-size: 1.5em;
-      font-weight: bolder;
-      color: #fff5;
-      margin-bottom: 0;
-    }
-    .highScoreValue {
-      color: #333;
-      font-size: 2em;
-      display: flex;
-      align-items: center;
-      justify-content: space-evenly;
-      width: 45%;
-      h2 {
-        margin: 0em;
-      }
-      svg {
-        font-size: 1.1em;
-      }
-    }
-  }
   .playButtonContainer {
     height: 33%;
     display: flex;

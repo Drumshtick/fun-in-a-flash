@@ -1,0 +1,87 @@
+.welcomeContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  .scoreLabel {
+    font-size: 1.5em;
+    font-weight: bolder;
+    color: #fff5;
+    margin-bottom: 0;
+  }
+  .totalScore {
+    font-size: 1.5em;
+    font-weight: bolder;
+    color: #fff5;
+    margin-bottom: 0;
+  }
+  .scoreValue {
+    color: #333;
+    font-size: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 45%;
+    h2 {
+      margin: 0em;
+    }
+    svg {
+      font-size: 1.1em;
+    }
+  }
+}
+
+.doneContainer {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  // justify-content: flex-end;
+  padding: 0 2em;
+  .scoreLabel {
+    text-align: left;
+    font-size: 1.5em;
+    font-weight: bolder;
+    color: #fff5;
+    margin-bottom: 0;
+    position: relative;
+    left: -1em;
+  }
+  .totalScore {
+    font-size: 1.5em;
+    font-weight: bolder;
+    color: #fff5;
+  }
+  .scoreValue {
+    color: #333;
+    font-size: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 45%;
+    h2 {
+      margin: 0em;
+      white-space: nowrap;
+    }
+    svg {
+      font-size: 1.1em;
+    }
+  }
+  .accuracy {
+    color: #333;
+    font-size: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 45%;
+    width: 45%;
+    h2 {
+      margin: 0em;
+      white-space: nowrap;
+      letter-spacing: 0.2em;
+    }
+    svg {
+      font-size: 1.1em;
+      color: transparent;
+    }
+  }
+}
