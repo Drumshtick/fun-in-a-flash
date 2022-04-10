@@ -11,7 +11,7 @@ const questionReducer = (state = initState, action) => {
   }
 
   if (action.type === 'RESET_QUESTION_COUNT') {
-    return { questionNumber: initialState.questionNumber };
+    return { questionNumber: initState.questionNumber };
   }
 
   return { questionNumber: state.questionNumber };
