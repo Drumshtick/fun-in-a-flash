@@ -7,3 +7,6 @@ export { default as totalScoreReducer } from './totalScoreReducer';
 export { default as intervalReducer } from './intervalReducer';
 export { default as viewReducer } from './viewReducer';
 export { default as accuracyReducer } from './accuracyReducer';
+export { default as setResultsReducer } from './setResultsReducer';
+export { default as openReviewReducer } from './openReviewReducer';
+export { default as activeResultReducer } from './activeResultReducer';
