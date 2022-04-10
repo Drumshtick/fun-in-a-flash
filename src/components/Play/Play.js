@@ -11,6 +11,8 @@ import { INCREASE_QUESTION_COUNT } from '../../redux/actions/questionActionTypes
 import { SET_INTERVAL_ID, CLEAR_INTERVAL_ID } from '../../redux/actions/intervalActionTypes';
 import { INCREASE_ACCURACY } from '../../redux/actions/accuracyActionTypes';
 import { SWITCH_VIEW_TO_DONE } from '../../redux/actions/viewActionTypes';
+import { PUSH_QUESTION } from '../../redux/actions/setResultsActionTypes';
+
 const CONSTANTS = {
   TOTAL_QUESTIONS: parseInt(process.env.NEXT_PUBLIC_TOTAL_QUESTIONS),
   INITIAL_SCORE: parseInt(process.env.NEXT_PUBLIC_INITIAL_SCORE),
@@ -53,6 +55,7 @@ const Play = ({
 
 
   const startQuestions = useCallback(() => {
+    // first question
     if (interval) {
       clearInterval(interval);
       dispatch(CLEAR_INTERVAL_ID());
@@ -89,6 +92,12 @@ const Play = ({
     if (parseInt(answer) === parseInt(value1) + parseInt(value2)) {
       console.log('CORRECT!');
       dispatch(INCREASE_ACCURACY());
+      dispatch(PUSH_QUESTION({
+        value1,
+        value2,
+        answer,
+        score
+      }));
       newQuestion();
       return;
     }
@@ -98,6 +107,12 @@ const Play = ({
   useEffect(() => {
     if (score <= 0) {
       newQuestion();
+      dispatch(PUSH_QUESTION({
+        value1,
+        value2,
+        answer,
+        score: 0
+      }));
     }
   }, [ score, newQuestion ])
 
