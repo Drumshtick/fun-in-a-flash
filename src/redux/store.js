@@ -8,6 +8,7 @@ import {
   totalScoreReducer,
   intervalReducer,
   viewReducer,
+  accuracyReducer,
 } from './reducers/index';
 const rootReducer = combineReducers({
     input: inputReducer,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
     question: questionReducer,
     interval: intervalReducer,
     view: viewReducer,
+    accuracy: accuracyReducer,
 });
 
 export const store = createStore(rootReducer);
