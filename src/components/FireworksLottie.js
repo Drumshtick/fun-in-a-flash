@@ -24,11 +24,11 @@ const FireworksLottie = ({ play, played, dispatch, madeHighScore, view }) => {
   useEffect(() => {
     const controlLottie = async () => {
       if (view !== 'done') return;
-      console.log("EXECUTED")
       dispatch(PLAY_FIREWORKS());
       await sleep(FIREWORKS_STOP_DELAY);
       dispatch(STOP_FIREWORKS());
     };
+
     if (madeHighScore) {
       controlLottie();
     }
@@ -40,7 +40,6 @@ const FireworksLottie = ({ play, played, dispatch, madeHighScore, view }) => {
       loop={true}
       autoplay={true}
       className={play ? styles.lottie : styles.hidden}
-      // className={styles.lottie}
     />
   );
 };
