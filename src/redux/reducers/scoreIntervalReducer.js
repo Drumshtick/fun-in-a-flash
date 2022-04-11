@@ -2,7 +2,7 @@ const initState = {
   ID: null,
 };
 
-const intervalReducer = (state = initState, action) => {
+const scoreIntervalReducer = (state = initState, action) => {
 
   if (action.type === 'SET_INTERVAL_ID') {
     return { ID: action.value };
@@ -15,4 +15,4 @@ const intervalReducer = (state = initState, action) => {
   return { ID: state.ID };
 };
 
-export default intervalReducer;
+export default scoreIntervalReducer;

@@ -12,7 +12,7 @@ function mapStateToProps(state) {
   return {
     answer: state.input.answer,
     view: state.view.view,
-    interval: state.interval.ID,
+    scoreInterval: state.scoreInterval.ID,
   };
 }
 
@@ -22,7 +22,7 @@ const KeyboardInput = ({
   reviewAnswer,
   view,
   submitAnswer,
-  interval
+  scoreInterval
 }) => {
 
   const formatValue = (value) => {

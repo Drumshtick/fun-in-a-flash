@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { SWITCH_VIEW_TO_WELCOME } from '../../redux/actions/viewActionTypes';
 import { INCORRECT_ANSWER } from '../../redux/actions/correctActionTypes';
 import { RESET_GUESS } from '../../redux/actions/InputActionTypes';
-import { CLEAR_INTERVAL_ID } from '../../redux/actions/intervalActionTypes';
+import { CLEAR_INTERVAL_ID } from '../../redux/actions/scoreIntervalActionTypes';
 import { RESET_QUESTION_COUNT } from '../../redux/actions/questionActionTypes';
 import { RESET_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
 import { RESET_ACCURACY } from '../../redux/actions/accuracyActionTypes';
@@ -19,7 +19,7 @@ const mapStateToProps = (state) => {
   return {
     questionNumber: state.question.questionNumber,
     totalScore: state.totalScore.totalScore,
-    interval: state.interval.ID
+    scoreInterval: state.scoreInterval.ID
   };
 }
 
@@ -27,12 +27,12 @@ const GameHeader = ({
   questionNumber,
   totalScore,
   dispatch,
-  interval
+  scoreInterval
 }) => {
 
   const handleClick = () => {
-    if (interval) {
-      clearTimeout(interval);
+    if (scoreInterval) {
+      clearTimeout(scoreInterval);
     }
     dispatch(SWITCH_VIEW_TO_WELCOME());
     dispatch(RESET_CORRECT());

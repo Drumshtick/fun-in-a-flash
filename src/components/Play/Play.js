@@ -8,7 +8,7 @@ import { CORRECT_ANSWER, RESET_CORRECT, INCORRECT_ANSWER } from '../../redux/act
 import { DECREASE_SCORE, RESET_SCORE } from '../../redux/actions/scoreActionTypes';
 import { INCREASE_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
 import { INCREASE_QUESTION_COUNT } from '../../redux/actions/questionActionTypes';
-import { SET_INTERVAL_ID, CLEAR_INTERVAL_ID } from '../../redux/actions/intervalActionTypes';
+import { SET_INTERVAL_ID, CLEAR_INTERVAL_ID } from '../../redux/actions/scoreIntervalActionTypes';
 import { INCREASE_ACCURACY } from '../../redux/actions/accuracyActionTypes';
 import { SWITCH_VIEW_TO_DONE } from '../../redux/actions/viewActionTypes';
 import { PUSH_QUESTION } from '../../redux/actions/setResultsActionTypes';
@@ -36,9 +36,8 @@ function mapStateToProps(state) {
     score: state.score.score,
     totalScore: state.totalScore.totalScore,
     questionNumber: state.question.questionNumber,
-    interval: state.interval.ID,
+    scoreInterval: state.scoreInterval.ID,
     highScore: state.highScore.highScore,
-    answerCorrect: state.answerCorrect.correct
   };
 }
 
@@ -50,13 +49,12 @@ const Play = ({
   questionNumber,
   score,
   totalScore,
-  interval,
+  scoreInterval,
   highScore,
-  answerCorrect
 }) => {
   const scoreDropper = useCallback(async () => {
-    if (interval) {
-      clearInterval(interval);
+    if (scoreInterval) {
+      clearInterval(scoreInterval);
       dispatch(CLEAR_INTERVAL_ID());
     }
     const { REDUCE_INTERVAL } = CONSTANTS;
@@ -71,8 +69,8 @@ const Play = ({
   const startQuestions = useCallback(() => {
     // first question
     dispatch(NEW_HIGH_SCORE_RESET());
-    if (interval) {
-      clearInterval(interval);
+    if (scoreInterval) {
+      clearInterval(scoreInterval);
       dispatch(CLEAR_INTERVAL_ID());
     }
     if (score !== CONSTANTS.INITIAL_SCORE) dispatch(RESET_SCORE());
@@ -82,8 +80,8 @@ const Play = ({
   }, [ dispatch, scoreDropper, score ]);
 
   const newQuestion = useCallback(() => {
-    if (interval) {
-      clearInterval(interval);
+    if (scoreInterval) {
+      clearInterval(scoreInterval);
       dispatch(CLEAR_INTERVAL_ID());
     }
     if (score !== CONSTANTS.INITIAL_SCORE) dispatch(RESET_SCORE());
@@ -95,8 +93,8 @@ const Play = ({
 
   const submitAnswer = async () => {
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
-    if (interval) {
-      clearInterval(interval);
+    if (scoreInterval) {
+      clearInterval(scoreInterval);
       dispatch(CLEAR_INTERVAL_ID());
     }
     const correct = parseInt(answer) === parseInt(value1) + parseInt(value2);
@@ -133,8 +131,8 @@ const Play = ({
   useEffect(async () => {
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
     if (score <= 0) {
-      if (interval) {
-        clearInterval(interval);
+      if (scoreInterval) {
+        clearInterval(scoreInterval);
         dispatch(CLEAR_INTERVAL_ID());
       }
       dispatch(INCORRECT_ANSWER());
