@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Swipe from 'react-easy-swipe';
-import { Fade } from "react-awesome-reveal";
 import debounce from '../../helpers/debounce';
 import { Button } from '@mui/material';
 import { InfoHeader, Stats } from './index';
@@ -8,19 +7,12 @@ import { QuestionArea } from '../Play/index';
 
 import { connect } from 'react-redux';
 import { SWITCH_VIEW_TO_PLAY } from '../../redux/actions/viewActionTypes';
-import { OPEN_REVIEW, CLOSE_REVIEW } from '../../redux/actions/openReviewActionTypes';
-import { NEXT_RESULT, PREV_RESULT, RESET_ACTIVE_RESULT } from '../../redux/actions/activeResultActionTypes';
-import { RESET_QUESTION_COUNT } from '../../redux/actions/questionActionTypes';
 import { RESET_RESULTS } from '../../redux/actions/setResultsActionTypes';
-import { RESET_SCORE } from '../../redux/actions/scoreActionTypes';
 import { RESET_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
-import { RESET_ACCURACY } from '../../redux/actions/accuracyActionTypes';
 import CasinoIcon from '@mui/icons-material/Casino';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
-import CheckIcon from '@mui/icons-material/Check';
 
 import styles from '../../styles/GameInfo.module.scss';
 
@@ -32,10 +24,8 @@ const mapStateToProps = (state) => {
   return {
     view: state.view.view,
     totalScore: state.totalScore.totalScore,
-    accuracy: state.accuracy.correct,
-    openReview: state.openReview.open,
+    accuracy: state.results.correct,
     results: state.results.results,
-    activeResult: state.activeResult.active,
     highScore: state.highScore.highScore,
     madeHighScore: state.madeHighScore.madeHighScore
   };
@@ -47,14 +37,13 @@ const GameInfo = ({
   dispatch,
   totalScore,
   accuracy,
-  openReview,
   results,
-  activeResult,
   highScore,
   madeHighScore
 }) => {
+  const [ openReview, setOpenReview ] = useState(false);
+  const [ activeResult, setActiveResult ] = useState(0)
   const maxResult = results.length;
-
   const onSwipeMove = (position) => {
     if (position.x < 0 && position.x < (MIN_SWIPE_DELTA * -1)) {
       handleNextResult();
@@ -66,38 +55,33 @@ const GameInfo = ({
   };
 
   const handlePlay = () => {
-    dispatch(RESET_QUESTION_COUNT());
+    setOpenReview(false);
     dispatch(RESET_RESULTS());
-    dispatch(RESET_ACCURACY());
-    dispatch(RESET_SCORE());
-    dispatch(RESET_ACTIVE_RESULT());
     dispatch(RESET_TOTAL_SCORE());
-    dispatch(CLOSE_REVIEW());
     dispatch(SWITCH_VIEW_TO_PLAY());
   };
 
   const handleReview = () => {
     if (!openReview) {
-      dispatch(OPEN_REVIEW());
+      setOpenReview(true);
       return;
     }
-    dispatch(CLOSE_REVIEW());
-    dispatch(RESET_ACTIVE_RESULT());
+    setOpenReview(false);
+    setActiveResult(0);
   };
 
   const handleNextResult = () => {
     if (activeResult + 1 === maxResult) {
       return;
     }
-    dispatch(NEXT_RESULT());
+    setActiveResult(activeResult + 1);
   }; 
 
   const handleLastResult = () => {
     if (activeResult + 1 === 1) {
       return;
     }
-    dispatch(PREV_RESULT());
-
+    setActiveResult(activeResult - 1);
   };
 
   return (
@@ -117,15 +101,15 @@ const GameInfo = ({
         />
       )}
       { view === 'done' && (!openReview ? (
-        <Stats
-          view={view}
-          totalScore={totalScore}
-          accuracy={accuracy}
-          highScore={highScore}
-        />
+          <Stats
+            view={view}
+            totalScore={totalScore}
+            accuracy={accuracy}
+            highScore={highScore}
+          />
         ) : (
           <div className={styles.reviewContainer}>
-            <QuestionArea reviewState={results[activeResult]} />
+            <QuestionArea reviewState={results[activeResult]} correct={results[activeResult].correct} />
             <Button
               className={activeResult + 1 === maxResult ? styles.disabled : styles.nextBtn}
               onClick={handleNextResult}
@@ -139,11 +123,6 @@ const GameInfo = ({
             >
               <ArrowLeftIcon />
             </Button>
-            <div
-              className={results[activeResult].correct ? styles.isCorrect : styles.isIncorrect}
-            >
-              {results[activeResult].correct ? <CheckIcon /> : <DoNotDisturbIcon />}
-            </div>
           </div>
         ))
       }

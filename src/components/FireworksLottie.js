@@ -1,38 +1,35 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import fireworks from '../../public/lottie/98350-fireworks.json';
 import { connect } from 'react-redux';
-import { PLAY_FIREWORKS, STOP_FIREWORKS } from '../redux/actions/lottieActionsTypes';
 import sleep from '../helpers/sleep';
 
 import styles from '../styles/FireworksLottie.module.scss';
 
-const FIREWORKS_START_DELAY = parseInt(process.env.NEXT_PUBLIC_FIREWORKS_START_DELAY);
 const FIREWORKS_STOP_DELAY = parseInt(process.env.NEXT_PUBLIC_FIREWORKS_STOP_DELAY);
 
 const mapStateToProps = (state) => {
   return {
-    play: state.lottie.fireworks,
-    played: state.lottie.fireworksPlayed,
     madeHighScore: state.madeHighScore.madeHighScore,
     view: state.view.view
   };
 };
 
-const FireworksLottie = ({ play, played, dispatch, madeHighScore, view }) => {
-  
+const FireworksLottie = ({ madeHighScore, view }) => {
+  const [ play, setPlay ] = useState(false);
+
   useEffect(() => {
     const controlLottie = async () => {
       if (view !== 'done') return;
-      dispatch(PLAY_FIREWORKS());
+      setPlay(true);
       await sleep(FIREWORKS_STOP_DELAY);
-      dispatch(STOP_FIREWORKS());
+      setPlay(false);
     };
 
     if (madeHighScore) {
       controlLottie();
     }
-  }, [ madeHighScore, played, view, dispatch ])
+  }, [ madeHighScore, view ])
 
   return (
     <Lottie

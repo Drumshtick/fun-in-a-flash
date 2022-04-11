@@ -11,11 +11,7 @@ const DEBOUNCE_DELAY = parseInt(process.env.NEXT_PUBLIC_DEBOUNCE_SWIPE_DELAY);
 function mapStateToProps(state) {
   return {
     answer: state.input.answer,
-    value1: state.addend.value1,
-    value2: state.addend.value2,
-    correct: state.answerCorrect.correct,
     view: state.view.view,
-    disableSubmit: state.disableSubmit.disabled
   };
 }
 
