@@ -1,4 +1,10 @@
 import React from 'react';
+import Swipe from 'react-easy-swipe';
+import debounce from '../../helpers/debounce';
+import { Button } from '@mui/material';
+import { InfoHeader, Stats } from './index';
+import { QuestionArea } from '../Play/index';
+
 import { connect } from 'react-redux';
 import { SWITCH_VIEW_TO_PLAY } from '../../redux/actions/viewActionTypes';
 import { OPEN_REVIEW, CLOSE_REVIEW } from '../../redux/actions/openReivewActionTypes';
@@ -10,14 +16,15 @@ import { RESET_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
 import { RESET_ACCURACY } from '../../redux/actions/accuracyActionTypes';
 import CasinoIcon from '@mui/icons-material/Casino';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button } from '@mui/material';
-import { InfoHeader, Stats, ReviewResults } from './index';
-import styles from '../../styles/GameInfo.module.scss';
-import { QuestionArea } from '../Play/index';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import CheckIcon from '@mui/icons-material/Check';
+
+import styles from '../../styles/GameInfo.module.scss';
+
+const MIN_SWIPE_DELTA = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
+
 
 const mapStateToProps = (state) => {
   return {
@@ -45,6 +52,16 @@ const GameInfo = ({
   madeHighScore
 }) => {
   const maxResult = results.length;
+
+  const onSwipeMove = (position) => {
+    if (position.x < 0 && position.x < (MIN_SWIPE_DELTA * -1)) {
+      handleNextResult();
+    }
+
+    if (position.x > 0 && position.x > MIN_SWIPE_DELTA) {
+      handleLastResult();
+    }
+  };
 
   const handlePlay = () => {
     dispatch(RESET_QUESTION_COUNT());
@@ -82,7 +99,10 @@ const GameInfo = ({
   };
 
   return (
-    <div className={styles.mainContainer}>
+    <Swipe
+      onSwipeMove={debounce(onSwipeMove, 750)}
+      className={styles.mainContainer}
+    >
       <InfoHeader
         view={view}
         madeHighScore={madeHighScore}
@@ -145,7 +165,7 @@ const GameInfo = ({
           <CasinoIcon />
         </Button>
       </div>
-    </div>
+    </Swipe>
   );
 };
 

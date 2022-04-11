@@ -7,6 +7,7 @@ import { CLEAR_INTERVAL_ID } from '../../redux/actions/intervalActionTypes';
 import { RESET_QUESTION_COUNT } from '../../redux/actions/questionActionTypes';
 import { RESET_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
 import { RESET_ACCURACY } from '../../redux/actions/accuracyActionTypes';
+import { RESET_CORRECT } from '../../redux/actions/correctActionTypes';
 import Button from '@mui/material/Button'
 import CloseIcon from '@mui/icons-material/Close';
 import StarsIcon from '@mui/icons-material/Stars';
@@ -34,6 +35,7 @@ const GameHeader = ({
       clearTimeout(interval);
     }
     dispatch(SWITCH_VIEW_TO_WELCOME());
+    dispatch(RESET_CORRECT());
     dispatch(INCORRECT_ANSWER());
     dispatch(RESET_GUESS());
     dispatch(CLEAR_INTERVAL_ID());

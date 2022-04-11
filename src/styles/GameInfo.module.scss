@@ -63,12 +63,11 @@
   }
   .playButtonContainer {
     position: absolute;
-    bottom: -16em;
+    bottom: -14em;
     left: 3.2em;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    margin-bottom: 1em;
     .playButton {
       height: 3em;
       min-width: 20em;
@@ -86,7 +85,7 @@
   }
   .reviewButtonContainer {
     position: absolute;
-    bottom: -11em;
+    bottom: -10em;
     left: 3.2em;
     height: 33%;
     display: flex;

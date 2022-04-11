@@ -3,14 +3,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  box-sizing: content-box;
-  max-height: 96vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  // box-sizing: content-box;
+  height: 100vh;
+  width: 100vw;
   background-color: #333;
   margin: 0;
-  padding: 2vh 0;
   overflow: hidden;
   font-family: Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }

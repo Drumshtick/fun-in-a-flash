@@ -12,3 +12,4 @@ export { default as openReviewReducer } from './openReviewReducer';
 export { default as activeResultReducer } from './activeResultReducer';
 export { default as highScoreReducer } from './highScoreReducer';
 export { default as newHighScoreReducer } from './newHighScoreReducer';
+export { default as lottieReducer } from './lottieReducer';

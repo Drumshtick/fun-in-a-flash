@@ -1,27 +1,12 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import styles from '../../styles/KeyboardInput.module.scss';
 import { INPUT_NUMBER, DELETE_NUMBER, RESET_GUESS } from '../../redux/actions/InputActionTypes';
-import isNumber from "../../helpers/isNumber";
-
+import isNumber from '../../helpers/isNumber';
+import debounce from '../../helpers/debounce';
 const MAX_CHAR = process.env.NEXT_PUBLIC_MAX_ANSWER_LENGTH;
 
-// http://davidwalsh.name/javascript-debounce-function
-// Fixes enter key issue with setInterval
-function debounce(func, wait, immediate) {
-  var timeout;
-  return function() {
-      var context = this, args = arguments;
-      var later = function() {
-          timeout = null;
-          if (!immediate) { func.apply(context, args); }
-      };
-      var callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) { func.apply(context, args); }
-  };
-}
+
 
 function mapStateToProps(state) {
   return {
@@ -42,7 +27,7 @@ const KeyboardInput = ({
 
   const formatValue = (value) => {
     return (
-      value === '' ? '' : parseInt(answer).toLocaleString("en-US")
+      value === '' ? '' : parseInt(answer).toLocaleString('en-US')
     );
   }
 
@@ -91,7 +76,7 @@ const KeyboardInput = ({
 
   return (
     <input
-      type="text"
+      type='text'
       readOnly
       className={styles.questionField}
       value={reviewAnswer ? reviewAnswer : formatValue(answer)}

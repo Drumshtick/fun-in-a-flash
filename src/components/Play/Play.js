@@ -16,6 +16,7 @@ import { SET_HIGH_SCORE } from '../../redux/actions/highScoreActionTypes';
 import { NEW_HIGH_SCORE, NEW_HIGH_SCORE_RESET } from '../../redux/actions/newHighScoreActionTypes.js';
 import sleep from '../../helpers/sleep';
 const CONSTANTS = {
+  SUCCESS_MARKER_DURATION: parseInt(process.env.NEXT_PUBLIC_DURATION_SUCCESS_INDICATOR),
   TOTAL_QUESTIONS: parseInt(process.env.NEXT_PUBLIC_TOTAL_QUESTIONS),
   INITIAL_SCORE: parseInt(process.env.NEXT_PUBLIC_INITIAL_SCORE),
   REDUCE_SCORE_BY: parseInt(process.env.NEXT_PUBLIC_REDUCE_SCORE_BY),
@@ -91,6 +92,7 @@ const Play = ({
   }, [ dispatch, score, scoreDropper ]);
 
   const submitAnswer = async () => {
+    const { SUCCESS_MARKER_DURATION } = CONSTANTS;
     if (interval) {
       clearInterval(interval);
       dispatch(CLEAR_INTERVAL_ID());
@@ -100,11 +102,11 @@ const Play = ({
       dispatch(INCREASE_TOTAL_SCORE(score));
       dispatch(INCREASE_ACCURACY());
       dispatch(CORRECT_ANSWER());
-      await sleep(2000);
+      await sleep(SUCCESS_MARKER_DURATION);
     }
     if (!correct) {
       dispatch(INCORRECT_ANSWER());
-      await sleep(2000);
+      await sleep(SUCCESS_MARKER_DURATION);
     }
     dispatch(RESET_CORRECT());
     dispatch(PUSH_QUESTION({
@@ -127,13 +129,14 @@ const Play = ({
   }, [ dispatch, scoreDropper, questionNumber, startQuestions, totalScore ]);
 
   useEffect(async () => {
+    const { SUCCESS_MARKER_DURATION } = CONSTANTS;
     if (score <= 0) {
       if (interval) {
         clearInterval(interval);
         dispatch(CLEAR_INTERVAL_ID());
       }
       dispatch(INCORRECT_ANSWER());
-      await sleep(2000);
+      await sleep(SUCCESS_MARKER_DURATION);
       dispatch(RESET_CORRECT());
       newQuestion();
       dispatch(PUSH_QUESTION({

@@ -1,7 +1,11 @@
 import React from "react";
 import { connect } from 'react-redux';
 import { KeyboardInput, QuestionScore, EnterAnswer, ResultPrompt } from './index';
+import Swipe from 'react-easy-swipe';
+import debounce from '../../helpers/debounce';
 import styles from '../../styles/QuestionArea.module.scss';
+
+const MIN_SWIPE_DELTA = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
 
 function mapStateToProps(state) {
   return {
@@ -23,9 +27,20 @@ const QuestionArea = ({
   view,
   correct
 }) => {
+  
+  const onSwipeMove = (position, event) => {
+    if (!submitAnswer) return;
+
+    if (position.x < 0 && position.x < (MIN_SWIPE_DELTA * -1)) {
+      submitAnswer();
+    }
+  };
 
   return (
-    <div className={styles.container}>
+    <Swipe
+      className={styles.container}
+      onSwipeMove={debounce(onSwipeMove, 750)}
+    >
       <QuestionScore reviewScore={view === 'done' && reviewState.score} />
       {correct !== null && <ResultPrompt correct={correct} />}
       {!reviewState && <EnterAnswer submitAnswer={submitAnswer} />}
@@ -39,7 +54,7 @@ const QuestionArea = ({
         reviewAnswer={reviewState && reviewState.answer}
         submitAnswer={submitAnswer}
       />
-    </div>
+  </Swipe>
   );
 };
 
