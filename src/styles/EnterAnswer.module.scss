@@ -1,10 +1,11 @@
 .btn {
   position: absolute;
-  bottom: -1.5em;
+  bottom: -0.6em;
+  bottom: -40px;
   right: 1em;
   background-color: #fff;
   width: 5em;
-  height: 2em;
+  min-height: 50px;
   border-radius: 10px;
   z-index: -1;
   svg {

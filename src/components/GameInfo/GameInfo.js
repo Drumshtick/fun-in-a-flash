@@ -1,5 +1,6 @@
 import React from 'react';
 import Swipe from 'react-easy-swipe';
+import { Fade } from "react-awesome-reveal";
 import debounce from '../../helpers/debounce';
 import { Button } from '@mui/material';
 import { InfoHeader, Stats } from './index';
@@ -24,6 +25,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import styles from '../../styles/GameInfo.module.scss';
 
 const MIN_SWIPE_DELTA = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
+const DEBOUNCE_DELAY = parseInt(process.env.NEXT_PUBLIC_DEBOUNCE_SWIPE_DELAY);
 
 
 const mapStateToProps = (state) => {
@@ -100,7 +102,7 @@ const GameInfo = ({
 
   return (
     <Swipe
-      onSwipeMove={debounce(onSwipeMove, 750)}
+      onSwipeMove={debounce(onSwipeMove, DEBOUNCE_DELAY)}
       className={styles.mainContainer}
     >
       <InfoHeader

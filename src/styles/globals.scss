@@ -24,3 +24,8 @@ a {
 div.hg-rows div.hg-row {
   margin-bottom: 0 !important;
 }
+
+button:disabled {
+  cursor: not-allowed !important;
+  background-color: #fff !important;
+}

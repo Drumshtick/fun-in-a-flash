@@ -18,7 +18,7 @@ function mapStateToProps(state) {
 
 const formatValue = (value) => {
   return (
-    value === '' ? '' : parseInt(answer).toLocaleString('en-US')
+    value === '' ? '' : parseInt(value).toLocaleString('en-US')
   );
 }
 

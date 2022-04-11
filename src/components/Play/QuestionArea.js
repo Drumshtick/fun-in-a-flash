@@ -6,6 +6,7 @@ import debounce from '../../helpers/debounce';
 import styles from '../../styles/QuestionArea.module.scss';
 
 const MIN_SWIPE_DELTA = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
+const DEBOUNCE_DELAY = parseInt(process.env.NEXT_PUBLIC_DEBOUNCE_SWIPE_DELAY);
 
 function mapStateToProps(state) {
   return {
@@ -13,11 +14,10 @@ function mapStateToProps(state) {
     value1: state.addend.value1,
     value2: state.addend.value2,
     correct: state.answerCorrect.correct,
-    view: state.view.view
+    view: state.view.view,
+    disableSubmit: state.disableSubmit.disabled
   };
 }
-
-
 
 const QuestionArea = ({
   value1,
@@ -25,7 +25,8 @@ const QuestionArea = ({
   reviewState,
   submitAnswer,
   view,
-  correct
+  correct,
+  disableSubmit
 }) => {
   
   const onSwipeMove = (position, event) => {
@@ -39,11 +40,11 @@ const QuestionArea = ({
   return (
     <Swipe
       className={styles.container}
-      onSwipeMove={debounce(onSwipeMove, 750)}
+      onSwipeMove={debounce(onSwipeMove, DEBOUNCE_DELAY)}
     >
       <QuestionScore reviewScore={view === 'done' && reviewState.score} />
       {correct !== null && <ResultPrompt correct={correct} />}
-      {!reviewState && <EnterAnswer submitAnswer={submitAnswer} />}
+      {!reviewState && <EnterAnswer submitAnswer={submitAnswer} disableSubmit={disableSubmit} />}
       <div className={styles.questionContainer}>
         <p>{reviewState ? reviewState.value1 : value1}</p>
         <div>

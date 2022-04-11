@@ -15,6 +15,7 @@ import { PUSH_QUESTION } from '../../redux/actions/setResultsActionTypes';
 import { SET_HIGH_SCORE } from '../../redux/actions/highScoreActionTypes';
 import { NEW_HIGH_SCORE, NEW_HIGH_SCORE_RESET } from '../../redux/actions/newHighScoreActionTypes.js';
 import { RESET_PLAYED_FIREWORKS } from '../../redux/actions/lottieActionsTypes';
+import { ENABLE_ANSWER_BTN, DISABLE_ANSWER_BTN } from '../../redux/actions/disableAnswerSubmitActionTypes';
 
 import sleep from '../../helpers/sleep';
 const CONSTANTS = {
@@ -22,7 +23,7 @@ const CONSTANTS = {
   TOTAL_QUESTIONS: parseInt(process.env.NEXT_PUBLIC_TOTAL_QUESTIONS),
   INITIAL_SCORE: parseInt(process.env.NEXT_PUBLIC_INITIAL_SCORE),
   REDUCE_SCORE_BY: parseInt(process.env.NEXT_PUBLIC_REDUCE_SCORE_BY),
-  REDUCE_INTERVAL: parseInt(process.env.NEXT_PUBLIC_REDUCE_INTERVAL),
+  REDUCE_INTERVAL: parseInt(process.env.NEXT_PUBLIC_REDUCE_SCORE_INTERVAL),
   TOTAL_INTERVALS: function() {
     return CONSTANTS.INITIAL_SCORE / CONSTANTS.REDUCE_SCORE_BY;
   }
@@ -38,6 +39,7 @@ function mapStateToProps(state) {
     questionNumber: state.question.questionNumber,
     scoreInterval: state.scoreInterval.ID,
     highScore: state.highScore.highScore,
+    disableSubmit: state.disableSubmit.disabled
   };
 }
 
@@ -51,6 +53,7 @@ const Play = ({
   totalScore,
   scoreInterval,
   highScore,
+  disableSubmit
 }) => {
   const scoreDropper = useCallback(async () => {
     if (scoreInterval) {
@@ -68,6 +71,7 @@ const Play = ({
 
   const startQuestions = useCallback(() => {
     // first question
+    dispatch(RESET_PLAYED_FIREWORKS());
     dispatch(NEW_HIGH_SCORE_RESET());
     if (scoreInterval) {
       clearInterval(scoreInterval);
@@ -92,22 +96,32 @@ const Play = ({
   }, [ dispatch, score, scoreDropper, scoreInterval ]);
 
   const submitAnswer = async () => {
+    if (disableSubmit) {
+      return;
+    }
+
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
+    dispatch(DISABLE_ANSWER_BTN());
     if (scoreInterval) {
       clearInterval(scoreInterval);
       dispatch(CLEAR_INTERVAL_ID());
     }
+
     const correct = parseInt(answer) === parseInt(value1) + parseInt(value2);
+
     if (correct) {
       dispatch(INCREASE_TOTAL_SCORE(score));
       dispatch(INCREASE_ACCURACY());
       dispatch(CORRECT_ANSWER());
       await sleep(SUCCESS_MARKER_DURATION);
     }
+
     if (!correct) {
       dispatch(INCORRECT_ANSWER());
       await sleep(SUCCESS_MARKER_DURATION);
     }
+    
+    dispatch(ENABLE_ANSWER_BTN());
     dispatch(RESET_CORRECT());
     dispatch(PUSH_QUESTION({
       value1,
@@ -156,7 +170,6 @@ const Play = ({
   useEffect(() => {
     if (questionNumber > CONSTANTS.TOTAL_QUESTIONS) {
       if (highScore < totalScore) {
-        dispatch(RESET_PLAYED_FIREWORKS());
         dispatch(NEW_HIGH_SCORE());
         dispatch(SET_HIGH_SCORE(totalScore));
       }
