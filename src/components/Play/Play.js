@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styles from '../../styles/Play.module.scss';
 import { GameHeader, QuestionArea, OnscreenInput } from './index';
 import { NEW_QUESTION } from '../../redux/actions/addendActionTypes';
-import { RESET_GUESS } from '../../redux/actions/InputActionTypes';
+import { RESET_GUESS } from '../../redux/actions/inputActionTypes';
 import { CORRECT_ANSWER, RESET_CORRECT, INCORRECT_ANSWER } from '../../redux/actions/correctActionTypes';
 import { DECREASE_SCORE, RESET_SCORE } from '../../redux/actions/scoreActionTypes';
 import { INCREASE_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';

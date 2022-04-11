@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { SWITCH_VIEW_TO_WELCOME } from '../../redux/actions/viewActionTypes';
 import { INCORRECT_ANSWER } from '../../redux/actions/correctActionTypes';
-import { RESET_GUESS } from '../../redux/actions/InputActionTypes';
+import { RESET_GUESS } from '../../redux/actions/inputActionTypes';
 import { CLEAR_INTERVAL_ID } from '../../redux/actions/scoreIntervalActionTypes';
 import { RESET_QUESTION_COUNT } from '../../redux/actions/questionActionTypes';
 import { RESET_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';

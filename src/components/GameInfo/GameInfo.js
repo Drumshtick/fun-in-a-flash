@@ -7,7 +7,7 @@ import { QuestionArea } from '../Play/index';
 
 import { connect } from 'react-redux';
 import { SWITCH_VIEW_TO_PLAY } from '../../redux/actions/viewActionTypes';
-import { OPEN_REVIEW, CLOSE_REVIEW } from '../../redux/actions/openReivewActionTypes';
+import { OPEN_REVIEW, CLOSE_REVIEW } from '../../redux/actions/openReviewActionTypes';
 import { NEXT_RESULT, PREV_RESULT, RESET_ACTIVE_RESULT } from '../../redux/actions/activeResultActionTypes';
 import { RESET_QUESTION_COUNT } from '../../redux/actions/questionActionTypes';
 import { RESET_RESULTS } from '../../redux/actions/setResultsActionTypes';

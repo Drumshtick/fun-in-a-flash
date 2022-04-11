@@ -18,6 +18,7 @@
     "lottie-react": "^2.2.1",
     "next": "12.1.0",
     "react": "17.0.2",
+    "react-awesome-reveal": "^3.8.1",
     "react-dom": "17.0.2",
     "react-easy-swipe": "^0.0.22",
     "react-redux": "^7.2.8",

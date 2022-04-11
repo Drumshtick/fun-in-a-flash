@@ -3,7 +3,7 @@ import BackspaceIcon from '@mui/icons-material/Backspace';
 import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
 import { connect } from 'react-redux';
-import { INPUT_NUMBER, DELETE_NUMBER, RESET_GUESS } from '../../redux/actions/InputActionTypes';
+import { INPUT_NUMBER, DELETE_NUMBER, RESET_GUESS } from '../../redux/actions/inputActionTypes';
 import styles from '../../styles/GameInput.module.scss';
 
 const MAX_CHAR = process.env.NEXT_PUBLIC_MAX_ANSWER_LENGTH;

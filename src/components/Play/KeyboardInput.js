@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import styles from '../../styles/KeyboardInput.module.scss';
-import { INPUT_NUMBER, DELETE_NUMBER, RESET_GUESS } from '../../redux/actions/InputActionTypes';
+import { INPUT_NUMBER, DELETE_NUMBER, RESET_GUESS } from '../../redux/actions/inputActionTypes';
 import isNumber from '../../helpers/isNumber';
 import debounce from '../../helpers/debounce';
 const MAX_CHAR = process.env.NEXT_PUBLIC_MAX_ANSWER_LENGTH;
