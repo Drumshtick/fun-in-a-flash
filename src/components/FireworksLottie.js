@@ -1,7 +1,7 @@
 import Lottie from 'lottie-react';
 import fireworks from '../../public/lottie/98350-fireworks.json';
 import { connect } from 'react-redux';
-import { PLAY_FIREWORKS, STOP_FIREWORKS, RESET_PLAYED_FIREWORKS } from '../redux/actions/lottieActionsTypes';
+import { PLAY_FIREWORKS, STOP_FIREWORKS } from '../redux/actions/lottieActionsTypes';
 import sleep from '../helpers/sleep';
 
 import styles from '../styles/FireworksLottie.module.scss';
@@ -17,7 +17,8 @@ const mapStateToProps = (state) => {
 };
 
 const FireworksLottie = ({ play, played, dispatch, madeHighScore }) => {
-  console.log(play)
+  console.log(FIREWORKS_DELAY)
+  console.log(madeHighScore && !played)
   const controlLottie = async () => {
     await sleep(FIREWORKS_DELAY);
     dispatch(PLAY_FIREWORKS());

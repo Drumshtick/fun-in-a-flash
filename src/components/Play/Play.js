@@ -14,6 +14,8 @@ import { SWITCH_VIEW_TO_DONE } from '../../redux/actions/viewActionTypes';
 import { PUSH_QUESTION } from '../../redux/actions/setResultsActionTypes';
 import { SET_HIGH_SCORE } from '../../redux/actions/highScoreActionTypes';
 import { NEW_HIGH_SCORE, NEW_HIGH_SCORE_RESET } from '../../redux/actions/newHighScoreActionTypes.js';
+import { RESET_PLAYED_FIREWORKS } from '../../redux/actions/lottieActionsTypes';
+
 import sleep from '../../helpers/sleep';
 const CONSTANTS = {
   SUCCESS_MARKER_DURATION: parseInt(process.env.NEXT_PUBLIC_DURATION_SUCCESS_INDICATOR),
@@ -152,6 +154,7 @@ const Play = ({
   useEffect(() => {
     if (questionNumber > CONSTANTS.TOTAL_QUESTIONS) {
       if (highScore < totalScore) {
+        dispatch(RESET_PLAYED_FIREWORKS());
         dispatch(NEW_HIGH_SCORE());
         dispatch(SET_HIGH_SCORE(totalScore));
       }
