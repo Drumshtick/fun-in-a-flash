@@ -63,7 +63,7 @@ const Play = ({
     }, REDUCE_INTERVAL);
 
     dispatch(SET_INTERVAL_ID(intervalID));
-  }, [ dispatch ])
+  }, [ dispatch, scoreInterval ])
 
 
   const startQuestions = useCallback(() => {
@@ -77,7 +77,7 @@ const Play = ({
     dispatch(INCREASE_QUESTION_COUNT())
     dispatch(NEW_QUESTION());
     scoreDropper();
-  }, [ dispatch, scoreDropper, score ]);
+  }, [ dispatch, scoreDropper, score, scoreInterval ]);
 
   const newQuestion = useCallback(() => {
     if (scoreInterval) {
@@ -89,7 +89,7 @@ const Play = ({
     dispatch(NEW_QUESTION());
     dispatch(RESET_GUESS());
     scoreDropper();
-  }, [ dispatch, score, scoreDropper ]);
+  }, [ dispatch, score, scoreDropper, scoreInterval ]);
 
   const submitAnswer = async () => {
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
@@ -128,9 +128,8 @@ const Play = ({
     }
   }, [ dispatch, scoreDropper, questionNumber, startQuestions, totalScore ]);
 
-  useEffect(async () => {
+  const endGame = useCallback(async () => {
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
-    if (score <= 0) {
       if (scoreInterval) {
         clearInterval(scoreInterval);
         dispatch(CLEAR_INTERVAL_ID());
@@ -146,8 +145,13 @@ const Play = ({
         score: 0,
         correct: false
       }));
+  }, [ answer, dispatch, scoreInterval, newQuestion, value1, value2 ]);
+
+  useEffect(() => {
+    if (score <= 0) {
+      endGame();
     }
-  }, [ score, newQuestion ])
+  }, [ score, endGame ])
 
   useEffect(() => {
     if (questionNumber > CONSTANTS.TOTAL_QUESTIONS) {
@@ -162,7 +166,7 @@ const Play = ({
       }
       dispatch(SWITCH_VIEW_TO_DONE());
     }
-  }, [ questionNumber ]);
+  }, [ questionNumber, scoreInterval, dispatch, highScore, totalScore ]);
 
   return (
     <div className={styles.container}>

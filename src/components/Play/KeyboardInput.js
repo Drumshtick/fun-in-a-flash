@@ -16,21 +16,19 @@ function mapStateToProps(state) {
   };
 }
 
+const formatValue = (value) => {
+  return (
+    value === '' ? '' : parseInt(answer).toLocaleString('en-US')
+  );
+}
+
 const KeyboardInput = ({
   answer,
   dispatch,
   reviewAnswer,
   view,
   submitAnswer,
-  scoreInterval
 }) => {
-
-  const formatValue = (value) => {
-    return (
-      value === '' ? '' : parseInt(answer).toLocaleString('en-US')
-    );
-  }
-
   const handleKeyDown = useCallback((e) => {
     const { key } = e;
     e.stopPropagation();
@@ -39,7 +37,6 @@ const KeyboardInput = ({
       'Backspace': () => dispatch(DELETE_NUMBER()),
       'Delete': () => dispatch(DELETE_NUMBER()),
       'Escape': () => dispatch(RESET_GUESS()),
-      // 'Enter': () => submitAnswer
     }
 
     if (specialKeys[key]) {
@@ -47,9 +44,10 @@ const KeyboardInput = ({
       return;
     }
 
-  }, [ dispatch ]);
+  }, [ dispatch, view ]);
 
-  const handleKeyPress = function(e) {
+
+  const handleKeyPress = useCallback(function(e) {
     const { key } = e;
     e.stopPropagation();
     e.preventDefault();
@@ -60,8 +58,8 @@ const KeyboardInput = ({
     if (key === 'Enter') {
       submitAnswer();
     }
+  }, [ dispatch, submitAnswer, view, answer ]);
 
-  };
 
   useEffect(() => {
     if (reviewAnswer && typeof window !== undefined) {
@@ -72,7 +70,7 @@ const KeyboardInput = ({
       window.removeEventListener('keydown', handleKeyDown);
       window.addEventListener('keypress', debounce(handleKeyPress, 500));
     };
-  }, [ handleKeyDown, handleKeyPress ]);1
+  }, [ handleKeyDown, handleKeyPress, reviewAnswer ]);
 
   return (
     <input
