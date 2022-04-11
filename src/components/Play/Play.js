@@ -156,8 +156,8 @@ const Play = ({
         dispatch(NEW_HIGH_SCORE());
         dispatch(SET_HIGH_SCORE(totalScore));
       }
-      if (interval) {
-        clearInterval(interval);
+      if (scoreInterval) {
+        clearInterval(scoreInterval);
         dispatch(CLEAR_INTERVAL_ID());
       }
       dispatch(SWITCH_VIEW_TO_DONE());
