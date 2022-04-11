@@ -1,7 +1,10 @@
 {
+  "plugins": [
+    "react-redux"
+  ],
   "extends": [
     "next/core-web-vitals",
-    "react-hooks"
+    "plugin:react-redux/recommended"
   ],
   "rules": {
     "react-hooks/exhaustive-deps": "warn"
