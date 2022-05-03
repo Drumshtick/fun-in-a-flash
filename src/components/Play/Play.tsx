@@ -12,17 +12,8 @@ import { SET_HIGH_SCORE } from '../../redux/actions/highScoreActionTypes';
 import { NEW_HIGH_SCORE, NEW_HIGH_SCORE_RESET } from '../../redux/actions/newHighScoreActionTypes.js';
 import makeQuestion from "../../helpers/makeQuestion";
 import sleep from "../../helpers/sleep";
-
-const CONSTANTS = {
-  SUCCESS_MARKER_DURATION: parseInt(process.env.NEXT_PUBLIC_DURATION_SUCCESS_INDICATOR),
-  TOTAL_QUESTIONS: parseInt(process.env.NEXT_PUBLIC_TOTAL_QUESTIONS),
-  INITIAL_SCORE: parseInt(process.env.NEXT_PUBLIC_INITIAL_SCORE),
-  REDUCE_SCORE_BY: parseInt(process.env.NEXT_PUBLIC_REDUCE_SCORE_BY),
-  REDUCE_INTERVAL: parseInt(process.env.NEXT_PUBLIC_REDUCE_SCORE_INTERVAL),
-  TOTAL_INTERVALS: function() {
-    return CONSTANTS.INITIAL_SCORE / CONSTANTS.REDUCE_SCORE_BY;
-  }
-}
+import CONSTANTS from "../../helpers/constants";
+import useScoreDropper from '../../hooks/useScoreDropper';
 
 function mapStateToProps(state) {
   return {
@@ -47,23 +38,20 @@ const Play = ({
   const [ disableSubmit, setDisableSubmit ] = useState(false);
   const [ questionCount, setQuestionCount ] = useState(0);
   const [ answerCorrect, setAnswerCorrect ] = useState(null);
-  const [ time, setTime ] = useState(null);
-  const [ dropScore, setDropScore ] = useState(false);
-  const [ questionStartTime, setQuestionStartTime ] = useState(null);
   const [ addends, setAddends ] = useState({
     value1: null,
     value2: null
   });
-
-  const scoreDropper = useCallback(() => {
-    setQuestionStartTime(time);
-    setDropScore(true)
-  }, [ time ])
+  const {
+    scoreDropper,
+    setDropScore,
+    setQuestionStartTime
+  } = useScoreDropper();
 
   const startQuestions = useCallback(async () => {
       // first question
     dispatch(NEW_HIGH_SCORE_RESET());
-    if (score !== CONSTANTS.INITIAL_SCORE) dispatch(RESET_SCORE());
+    if (score !== CONSTANTS['INITIAL_SCORE']) dispatch(RESET_SCORE());
     setQuestionCount(questionCount + 1)
 
     const { value1, value2 } = makeQuestion();
@@ -132,25 +120,13 @@ const Play = ({
         correct: false
       }));
     }, [ answer, dispatch, newQuestion, addends ]);
-    
-    useEffect(() => {
-      const intervalID = setInterval(() => {
-        const secondsSinceEpoch: number = Math.round(Date.now() / 1000)
-        setTime(secondsSinceEpoch);
-      }, 1000);
-      // Not sure why this is triggering memory leak
-      // dispatch(SET_INTERVAL_ID(intervalID));
-      return () => {
-        clearInterval(intervalID);
-      };
-    });
 
   useEffect(() => {
     // Start Game
-    if (questionCount === 0 && time !== null) {
+    if (questionCount === 0) {
       startQuestions();
     }
-  }, [ dispatch, scoreDropper, questionCount, startQuestions, totalScore, time ]);
+  }, [ dispatch, scoreDropper, questionCount, startQuestions, totalScore ]);
 
 
   useEffect(() => {
@@ -175,16 +151,7 @@ const Play = ({
     }
   }, [ questionCount, dispatch, highScore, totalScore, scoreInterval ]);
 
-  useEffect(() => {
-    if (!dropScore) return;
-    const {
-      REDUCE_INTERVAL
-    } = CONSTANTS;
-    if (time - questionStartTime >= REDUCE_INTERVAL) {
-      dispatch(DECREASE_SCORE());
-      setQuestionStartTime(time);
-    }
-  }, [ dropScore, time, questionStartTime, score, dispatch ])
+
 
   return (
     <div className={styles.container}>

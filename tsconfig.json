@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/hooks/useScoreDropper.js"  ],
   "exclude": [
     "node_modules"
   ]
