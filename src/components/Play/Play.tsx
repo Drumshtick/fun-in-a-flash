@@ -12,7 +12,7 @@ import { SET_HIGH_SCORE } from '../../redux/actions/highScoreActionTypes';
 import { NEW_HIGH_SCORE, NEW_HIGH_SCORE_RESET } from '../../redux/actions/newHighScoreActionTypes.js';
 import makeQuestion from "../../helpers/makeQuestion";
 
-import sleep from '../../helpers/sleep';
+
 const CONSTANTS = {
   SUCCESS_MARKER_DURATION: parseInt(process.env.NEXT_PUBLIC_DURATION_SUCCESS_INDICATOR),
   TOTAL_QUESTIONS: parseInt(process.env.NEXT_PUBLIC_TOTAL_QUESTIONS),
@@ -47,41 +47,64 @@ const Play = ({
   const [ disableSubmit, setDisableSubmit ] = useState(false);
   const [ questionCount, setQuestionCount ] = useState(0);
   const [ answerCorrect, setAnswerCorrect ] = useState(null);
-  const [ addends, setAddends ] = useState({});
-  const scoreDropper = useCallback(async () => {
-    if (view !== 'play') return;
+  const [ addends, setAddends ] = useState({
+    value1: null,
+    value2: null
+  });
 
+  const sleep = (duration) => {
+    return new Promise((resolve)=>{
+      const intervalID: number = window.setTimeout(resolve,duration);
+      dispatch(SET_INTERVAL_ID(intervalID));
+    });
+  };
+
+  const scoreDropper = useCallback(async () => {
+    console.log("Started dropper")
     if (scoreInterval) {
-      clearInterval(scoreInterval);
+      clearTimeout(scoreInterval);
       dispatch(CLEAR_INTERVAL_ID());
     }
-    const { REDUCE_INTERVAL } = CONSTANTS;
-    const intervalID = setInterval(() => {
+    const {
+      REDUCE_INTERVAL,
+      INITIAL_SCORE,
+      REDUCE_SCORE_BY
+    } = CONSTANTS;
+    const MAX = INITIAL_SCORE / REDUCE_SCORE_BY;
+    // const intervalID = setInterval(() => {
+    //   dispatch(DECREASE_SCORE());
+    // }, REDUCE_INTERVAL);
+    for(let i = 0; i < MAX; i++) {
+      await sleep(REDUCE_INTERVAL);
+      console.log("In state: ", scoreInterval)
       dispatch(DECREASE_SCORE());
-    }, REDUCE_INTERVAL);
+    }
 
-    dispatch(SET_INTERVAL_ID(intervalID));
-  }, [ dispatch, scoreInterval, view ])
+  }, [ dispatch, scoreInterval ])
 
 
-  const startQuestions = useCallback(() => {
+  const startQuestions = useCallback(async () => {
     // first question
     dispatch(NEW_HIGH_SCORE_RESET());
     if (scoreInterval) {
-      clearInterval(scoreInterval);
+      clearTimeout(scoreInterval);
       dispatch(CLEAR_INTERVAL_ID());
     }
     if (score !== CONSTANTS.INITIAL_SCORE) dispatch(RESET_SCORE());
     setQuestionCount(questionCount+ 1)
 
     const { value1, value2 } = makeQuestion();
-    setAddends({ value1, value2 });
+    setAddends(() => {
+      return {
+        value1, value2
+      }
+    });
     scoreDropper();
   }, [ dispatch, scoreDropper, score, scoreInterval, questionCount ]);
 
   const newQuestion = useCallback(() => {
     if (scoreInterval) {
-      clearInterval(scoreInterval);
+      clearTimeout(scoreInterval);
       dispatch(CLEAR_INTERVAL_ID());
     }
     if (score !== CONSTANTS.INITIAL_SCORE) dispatch(RESET_SCORE());
@@ -101,7 +124,7 @@ const Play = ({
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
     setDisableSubmit(true);
     if (scoreInterval) {
-      clearInterval(scoreInterval);
+      clearTimeout(scoreInterval);
       dispatch(CLEAR_INTERVAL_ID());
     }
 
@@ -143,7 +166,7 @@ const Play = ({
   const endQuestion = useCallback(async () => {
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
       if (scoreInterval) {
-        clearInterval(scoreInterval);
+        clearTimeout(scoreInterval);
         dispatch(CLEAR_INTERVAL_ID());
       }
       setAnswerCorrect(false);
@@ -168,19 +191,21 @@ const Play = ({
 
 
   useEffect(() => {
+    // Out of time
     if (score <= 0) {
       endQuestion();
     }
   }, [ score, endQuestion ])
 
   useEffect(() => {
+    // End game
     if (questionCount > CONSTANTS.TOTAL_QUESTIONS) {
       if (highScore < totalScore) {
         dispatch(NEW_HIGH_SCORE());
         dispatch(SET_HIGH_SCORE(totalScore));
       }
       if (scoreInterval) {
-        clearInterval(scoreInterval);
+        clearTimeout(scoreInterval);
         dispatch(CLEAR_INTERVAL_ID());
       }
       dispatch(SWITCH_VIEW_TO_DONE());
