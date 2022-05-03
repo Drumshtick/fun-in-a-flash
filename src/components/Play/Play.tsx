@@ -64,7 +64,7 @@ const Play = ({
   }, [ dispatch, scoreDropper, score, questionCount ]);
 
   const newQuestion = useCallback(() => {
-    if (score !== CONSTANTS.INITIAL_SCORE) dispatch(RESET_SCORE());
+    if (score !== CONSTANTS['INITIAL_SCORE']) dispatch(RESET_SCORE());
 
     setQuestionCount(questionCount+ 1);
     const { value1, value2 } = makeQuestion();
@@ -77,7 +77,7 @@ const Play = ({
     if (disableSubmit) {
       return;
     }
-    const { SUCCESS_MARKER_DURATION } = CONSTANTS;
+    const { SUCCESS_MARKER_DURATION }: { SUCCESS_MARKER_DURATION: number } = CONSTANTS;
     setDropScore(false);
     setQuestionStartTime(null);
     setDisableSubmit(true);
