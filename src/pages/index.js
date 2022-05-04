@@ -7,6 +7,7 @@ import useFullScreenAPI from '../hooks/useFullScreenAPI';
 const GameInfo = dynamic(() => import('../components/GameInfo/GameInfo'));
 const Play = dynamic(() => import('../components/Play/Play'));
 const FireworksLottie = dynamic(() => import('../components/FireworksLottie'));
+import useDeviceCheck from '../hooks/useDeviceCheck';
 
 const mapStateToProps = (state) => {
   return {
@@ -15,9 +16,10 @@ const mapStateToProps = (state) => {
 };
 
 const Home = ({ view }) => {
+  const isMobile = useDeviceCheck();
 
   return (
-    <div className={styles.gameContainer}>
+    <div className={`${styles.gameContainer} ${isMobile && styles.mobile}`}>
       <Head>
         <title>Fun in a flash</title>
         <meta name="description" content="A math flash card app" />
