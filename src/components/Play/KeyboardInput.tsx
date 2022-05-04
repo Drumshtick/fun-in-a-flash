@@ -1,11 +1,11 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import styles from '../../styles/KeyboardInput.module.scss';
 import { INPUT_NUMBER, DELETE_NUMBER, RESET_GUESS } from '../../redux/actions/inputActionTypes';
 import isNumber from '../../helpers/isNumber';
+import useDeviceCheck from '../../hooks/useDeviceCheck';
+
 const MAX_CHAR = process.env.NEXT_PUBLIC_MAX_ANSWER_LENGTH;
-
-
 
 function mapStateToProps(state) {
   return {
@@ -28,22 +28,20 @@ const KeyboardInput = ({
   view,
   submitAnswer,
 }) => {
+  const isMobile = useDeviceCheck();
   const handleKeyDown = useCallback((e) => {
     const { key } = e;
-    e.stopPropagation();
     const specialKeys: {
       'Backspace': Function,
       'Delete': Function,
-      'Escape': Function
+      'Escape': Function,
     } = {
       'Backspace': (): void => dispatch(DELETE_NUMBER()),
       'Delete': (): void => dispatch(DELETE_NUMBER()),
       'Escape': (): void => dispatch(RESET_GUESS()),
     }
-
     if (specialKeys[key]) {
       specialKeys[key]();
-      return;
     }
 
   }, [ dispatch ]);
@@ -51,7 +49,6 @@ const KeyboardInput = ({
 
   const handleKeyPress = useCallback(function(e) {
     const { key }: { key: string } = e;
-    e.stopPropagation();
     if (isNumber(key) && answer.length < MAX_CHAR) {
       dispatch(INPUT_NUMBER(key));
     }
@@ -60,27 +57,18 @@ const KeyboardInput = ({
     }
   }, [ dispatch, submitAnswer, answer ]);
 
-
-  useEffect(() => {
-    if (reviewAnswer && typeof window !== undefined) {
-      window.addEventListener('keydown', handleKeyDown);
-      window.addEventListener('keypress', handleKeyPress);
-    }
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keypress', handleKeyPress);
-    };
-  }, [ handleKeyDown, handleKeyPress, reviewAnswer ]);
-
   return (
     <input
-      type='text'
-      readOnly
+      type={isMobile ? 'number' : 'text'}
       className={styles.questionField}
+      disabled={view === 'play' ? false: true}
       value={reviewAnswer ? reviewAnswer : formatValue(answer)}
       onKeyDown={e => handleKeyDown(e)}
       onKeyPress={e => handleKeyPress(e)}
-      ref={element => element && element.focus()}
+      ref={element => {
+        if (view !== 'play') return;
+        element && element.focus()
+      }}
     />
   );
 };
