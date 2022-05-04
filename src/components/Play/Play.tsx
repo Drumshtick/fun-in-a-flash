@@ -94,12 +94,9 @@ const Play: React.FC<PlayProps> = ({
     setDropScore(false);
     setQuestionStartTime(null);
     setDisableSubmit(true);
-    const correct: boolean = (
-      parseInt(answer) === addends.value1 + addends.value2
-      );
-
+    const correct: boolean = parseInt(answer) === addends.value1 + addends.value2;
     if (correct) dispatch(INCREASE_TOTAL_SCORE(score));
-    gameStateDispatcher(CORRECT_ANSWER());
+    gameStateDispatcher(correct ? CORRECT_ANSWER() : INCORRECT_ANSWER());
     await sleep(SUCCESS_MARKER_DURATION);
     dispatch(PUSH_CORRECT_QUESTION({
       value1: addends.value1,
