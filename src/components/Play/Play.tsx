@@ -3,17 +3,27 @@ import { connect } from 'react-redux';
 import styles from '../../styles/Play.module.scss';
 import { GameHeader, QuestionArea, OnscreenInput } from './index';
 import { RESET_GUESS } from '../../redux/actions/inputActionTypes';
-import { DECREASE_SCORE, RESET_SCORE } from '../../redux/actions/scoreActionTypes';
+import { RESET_SCORE } from '../../redux/actions/scoreActionTypes';
 import { INCREASE_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
-import { SET_INTERVAL_ID, CLEAR_INTERVAL_ID } from '../../redux/actions/scoreIntervalActionTypes';
+import { CLEAR_INTERVAL_ID } from '../../redux/actions/scoreIntervalActionTypes';
 import { SWITCH_VIEW_TO_DONE } from '../../redux/actions/viewActionTypes';
 import { PUSH_QUESTION, PUSH_CORRECT_QUESTION } from '../../redux/actions/setResultsActionTypes';
 import { SET_HIGH_SCORE } from '../../redux/actions/highScoreActionTypes';
 import { NEW_HIGH_SCORE, NEW_HIGH_SCORE_RESET } from '../../redux/actions/newHighScoreActionTypes.js';
-import makeQuestion from "../../helpers/makeQuestion";
+import { makeQuestion } from "../../helpers/makeQuestion";
 import sleep from "../../helpers/sleep";
 import CONSTANTS from "../../helpers/constants";
 import useScoreDropper from '../../hooks/useScoreDropper';
+
+import {
+  INCREASE_QUESTION_COUNT,
+  CORRECT_ANSWER,
+  INCORRECT_ANSWER,
+  RESET_CORRECT_ANSWER,
+  SET_ADDENDS,
+  gameStateReducer,
+  initGameState
+} from './gameStateReducer';
 
 function mapStateToProps(state) {
   return {
@@ -34,60 +44,6 @@ interface PlayProps {
   scoreInterval: number,
   highScore: number,
 }
-
-interface GameStateReducerProps {
-  questionCount: number,
-  answerCorrect: boolean
-}
-
-const INCREASE_QUESTION_COUNT = (): {type: string} => ({ type: 'INCREASE_QUESTION_COUNT'});
-const CORRECT_ANSWER = (): {type: string} => ({ type: 'CORRECT_ANSWER'});
-const INCORRECT_ANSWER = (): {type: string} => ({ type: 'INCORRECT_ANSWER'});
-const RESET_CORRECT_ANSWER = (): {type: string} => ({ type: 'RESET_CORRECT_ANSWER'});
-const SET_ADDENDS = (value1, value2): {type: string, value1: number, value2: number} => ({ type: 'SET_ADDENDS', value1, value2});
-
-const initGameState = {
-  addends: {
-    value1: null,
-    value2: null,
-  },
-  answerCorrect: null,
-  questionCount: 0
-}
-
-interface InitGameStateTypes {
-  addends: {
-    value1: null,
-    value2: null,
-  },
-  answerCorrect: boolean,
-  questionCount: 0
-}
-
-const gameStateReducer = (state, action) => {
-  if (action.type === 'INCREASE_QUESTION_COUNT') {
-    return { ...state, questionCount: state.questionCount + 1 }
-  }
-
-  if (action.type === 'CORRECT_ANSWER') {
-    return { ...state, answerCorrect: true };
-  }
-
-  if (action.type === 'INCORRECT_ANSWER') {
-    return { ...state, answerCorrect: false };
-  }
-
-  if (action.type === 'RESET_CORRECT_ANSWER') {
-    return { ...state, answerCorrect: null };
-  }
-
-  if (action.type === 'SET_ADDENDS') {
-    return { ...state, addends: {value1: action.value1, value2: action.value2} };
-  }
-
-  return state;
-};
-
 
 const Play: React.FC<PlayProps> = ({
   dispatch,
@@ -130,16 +86,16 @@ const Play: React.FC<PlayProps> = ({
     scoreDropper();
   }, [ dispatch, score, scoreDropper ]);
 
-  const submitAnswer = async () => {
+  const submitAnswer = async (): Promise<null> => {
     if (disableSubmit) {
       return;
     }
-    const { SUCCESS_MARKER_DURATION }: { SUCCESS_MARKER_DURATION: number } = CONSTANTS;
+    const { SUCCESS_MARKER_DURATION } = CONSTANTS;
     setDropScore(false);
     setQuestionStartTime(null);
     setDisableSubmit(true);
-    const correct = (
-      parseInt(answer) === parseInt(addends.value1) + parseInt(addends.value2)
+    const correct: boolean = (
+      parseInt(answer) === addends.value1 + addends.value2
       );
 
     if (correct) dispatch(INCREASE_TOTAL_SCORE(score));
