@@ -15,7 +15,24 @@ function mapStateToProps(state) {
   };
 }
 
-const QuestionArea = ({
+interface ReviewState {
+  answer: number,
+  score: number,
+  value1: number,
+  value2: number,
+}
+
+interface QuestionArea {
+  value1: number,
+  value2: number,
+  reviewState?: ReviewState,
+  submitAnswer: Function,
+  view: string,
+  correct: boolean,
+  disableSubmit: boolean
+}
+
+const QuestionArea: React.FC<QuestionArea> = ({
   value1,
   value2,
   reviewState,
@@ -25,7 +42,7 @@ const QuestionArea = ({
   disableSubmit
 }) => {
   
-  const onSwipeMove = (position, event) => {
+  const onSwipeMove = (position) => {
     if (!submitAnswer) return;
 
     if (position.x < 0 && position.x < (MIN_SWIPE_DELTA * -1)) {
