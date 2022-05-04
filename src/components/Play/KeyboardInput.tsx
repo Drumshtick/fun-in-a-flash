@@ -34,11 +34,9 @@ const KeyboardInput = ({
     const specialKeys: {
       'Backspace': Function,
       'Delete': Function,
-      'Escape': Function,
     } = {
       'Backspace': (): void => dispatch(DELETE_NUMBER()),
       'Delete': (): void => dispatch(DELETE_NUMBER()),
-      'Escape': (): void => dispatch(RESET_GUESS()),
     }
     if (specialKeys[key]) {
       specialKeys[key]();
