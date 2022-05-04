@@ -1,12 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 import { KeyboardInput, QuestionScore, EnterAnswer, ResultPrompt } from './index';
 import Swipe from 'react-easy-swipe';
-import debounce from '../../helpers/debounce';
 import styles from '../../styles/QuestionArea.module.scss';
-
-const MIN_SWIPE_DELTA = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
-const DEBOUNCE_DELAY = parseInt(process.env.NEXT_PUBLIC_DEBOUNCE_SWIPE_DELAY);
+const MIN_SWIPE_DELTA: number = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
 
 function mapStateToProps(state) {
   return {
@@ -32,6 +29,12 @@ interface QuestionArea {
   disableSubmit: boolean
 }
 
+interface SwipePosition {
+  // From react-easy-swipe source code
+  x: number;
+  y: number;
+}
+
 const QuestionArea: React.FC<QuestionArea> = ({
   value1,
   value2,
@@ -41,19 +44,34 @@ const QuestionArea: React.FC<QuestionArea> = ({
   correct,
   disableSubmit
 }) => {
-  
-  const onSwipeMove = (position) => {
-    if (!submitAnswer) return;
-
+  const [ activeSwipe, setActiveSwipe ] = useState(false);
+  const [ swipeAction, setSwipeAction ] = useState(false);
+  const onSwipeMove = (position: SwipePosition) => {
+    if (activeSwipe || !submitAnswer) return;
+    toggleSwipeAction();
+    setActiveSwipe(true);
     if (position.x < 0 && position.x < (MIN_SWIPE_DELTA * -1)) {
       submitAnswer();
     }
+    setActiveSwipe(false);
   };
 
+  const toggleSwipeAction = () => {
+    setSwipeAction(swipeAction ? false : true);
+  };
+
+  useEffect(() => {
+    if (correct === null ) {
+      setSwipeAction(false);
+      return;
+    }
+
+  }, [ correct, submitAnswer ])
+  
   return (
     <Swipe
-      className={styles.container}
-      onSwipeMove={debounce(onSwipeMove, DEBOUNCE_DELAY)}
+      className={`${styles.container} ${swipeAction && styles.swiping}`}
+      onSwipeMove={onSwipeMove}
     >
       <QuestionScore reviewScore={view === 'done' && reviewState.score} />
       {correct !== null && <ResultPrompt correct={correct} />}
