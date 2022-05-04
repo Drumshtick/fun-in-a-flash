@@ -18,3 +18,20 @@
   max-height: 1000px;
   margin: 0;
 }
+
+
+.OpenFullScreen {
+  position: absolute;
+  top: 0;
+  right: 0;
+  button {
+    svg {
+      color: #fff;
+      font-size: 1.5em;
+    }
+  }
+}
+
+.playOpenFullScreen {
+  display: none;
+}
