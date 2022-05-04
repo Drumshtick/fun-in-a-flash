@@ -119,7 +119,7 @@ const Play = ({
         score: 0,
         correct: false
       }));
-    }, [ answer, dispatch, newQuestion, addends ]);
+    }, [ answer, dispatch, newQuestion, addends, setDropScore, setQuestionStartTime ]);
 
   useEffect(() => {
     // Start Game
@@ -142,6 +142,7 @@ const Play = ({
       if (highScore < totalScore) {
         dispatch(NEW_HIGH_SCORE());
         dispatch(SET_HIGH_SCORE(totalScore));
+        window.localStorage.setItem('HighScore', JSON.stringify(totalScore));
       }
       if (scoreInterval) {
         clearInterval(scoreInterval);

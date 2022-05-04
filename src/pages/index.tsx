@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { SET_HIGH_SCORE } from '../redux/actions/highScoreActionTypes';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { IconButton, Snackbar, Alert } from '@mui/material';
@@ -17,17 +18,31 @@ const mapStateToProps = (state) => {
   }
 };
 
+interface HomeProps {
+  view: string,
+  dispatch: any
+}
 
-const Home = ({ view }: { view: string }) => {
+const Home: React.FC<HomeProps> = ({ view, dispatch }) => {
   const isMobile: boolean = useDeviceCheck();
   const {
     isFullScreen,
-    setIsFullScreen,
     handleErrorSnackClose,
     toggleFullScreen,
     openError,
     fullScreenError
   } = useFullScreenAPI();
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const highScore: string = JSON.parse(window.localStorage.getItem('HighScore'));
+      if (highScore) {
+        dispatch(SET_HIGH_SCORE(highScore))
+        return;
+      }
+    }
+  }, []);
+
   return (
     <div
       className={`${styles.gameContainer} ${isMobile && styles.mobile}`}
