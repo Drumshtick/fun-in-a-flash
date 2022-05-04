@@ -2,13 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DECREASE_SCORE } from '../redux/actions/scoreActionTypes';
 
-const REDUCE_INTERVAL = parseInt(process.env.NEXT_PUBLIC_REDUCE_SCORE_INTERVAL)
-
-// function mapStateToProps(state) {
-//   return {
-//     score: state.score['score'],
-//   };
-// }
+const REDUCE_INTERVAL = parseInt(process.env.NEXT_PUBLIC_REDUCE_SCORE_INTERVAL);
 
 const useScoreDropper = () => {
   const { score } = useSelector(state => {
@@ -36,7 +30,7 @@ const useScoreDropper = () => {
     return () => {
       clearInterval(intervalID);
     };
-  });
+  }, []);
 
   useEffect(() => {
     if (!dropScore) return;
