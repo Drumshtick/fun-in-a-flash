@@ -69,7 +69,7 @@ const Home: React.FC<HomeProps> = ({ view, dispatch }) => {
         </IconButton>
       </div>
       <div className={styles.errorSnack}>
-        <Snackbar sx={{width: '97%'}} open={openError} severity='error' onClose={handleErrorSnackClose}>
+        <Snackbar sx={{width: '97%'}} open={openError} onClose={handleErrorSnackClose}>
           <Alert onClose={handleErrorSnackClose} severity={'error'} sx={{ width: '100%' }}>
             {fullScreenError}
           </Alert>
