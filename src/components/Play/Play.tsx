@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useReducer } from 'react';
 import { connect } from 'react-redux';
 import styles from '../../styles/Play.module.scss';
 import { GameHeader, QuestionArea, OnscreenInput } from './index';
@@ -26,22 +26,84 @@ function mapStateToProps(state) {
   };
 }
 
-const Play = ({
+interface PlayProps {
+  dispatch: any,
+  answer: string,
+  score: number,
+  totalScore: number,
+  scoreInterval: number,
+  highScore: number,
+}
+
+interface GameStateReducerProps {
+  questionCount: number,
+  answerCorrect: boolean
+}
+
+const INCREASE_QUESTION_COUNT = (): {type: string} => ({ type: 'INCREASE_QUESTION_COUNT'});
+const CORRECT_ANSWER = (): {type: string} => ({ type: 'CORRECT_ANSWER'});
+const INCORRECT_ANSWER = (): {type: string} => ({ type: 'INCORRECT_ANSWER'});
+const RESET_CORRECT_ANSWER = (): {type: string} => ({ type: 'RESET_CORRECT_ANSWER'});
+const SET_ADDENDS = (value1, value2): {type: string, value1: number, value2: number} => ({ type: 'SET_ADDENDS', value1, value2});
+
+const initGameState = {
+  addends: {
+    value1: null,
+    value2: null,
+  },
+  answerCorrect: null,
+  questionCount: 0
+}
+
+interface InitGameStateTypes {
+  addends: {
+    value1: null,
+    value2: null,
+  },
+  answerCorrect: boolean,
+  questionCount: 0
+}
+
+const gameStateReducer = (state, action) => {
+  if (action.type === 'INCREASE_QUESTION_COUNT') {
+    return { ...state, questionCount: state.questionCount + 1 }
+  }
+
+  if (action.type === 'CORRECT_ANSWER') {
+    return { ...state, answerCorrect: true };
+  }
+
+  if (action.type === 'INCORRECT_ANSWER') {
+    return { ...state, answerCorrect: false };
+  }
+
+  if (action.type === 'RESET_CORRECT_ANSWER') {
+    return { ...state, answerCorrect: null };
+  }
+
+  if (action.type === 'SET_ADDENDS') {
+    return { ...state, addends: {value1: action.value1, value2: action.value2} };
+  }
+
+  return state;
+};
+
+
+const Play: React.FC<PlayProps> = ({
   dispatch,
   answer,
   score,
   totalScore,
   scoreInterval,
   highScore,
-  view
 }) => {
+  const [ gameState, gameStateDispatcher ] = useReducer(gameStateReducer, initGameState);
+  const {
+    addends,
+    answerCorrect,
+    questionCount
+  } = gameState;
   const [ disableSubmit, setDisableSubmit ] = useState(false);
-  const [ questionCount, setQuestionCount ] = useState(0);
-  const [ answerCorrect, setAnswerCorrect ] = useState(null);
-  const [ addends, setAddends ] = useState({
-    value1: null,
-    value2: null
-  });
   const {
     scoreDropper,
     setDropScore,
@@ -49,29 +111,24 @@ const Play = ({
   } = useScoreDropper();
 
   const startQuestions = useCallback(async () => {
-      // first question
+    // first question
     dispatch(NEW_HIGH_SCORE_RESET());
     if (score !== CONSTANTS['INITIAL_SCORE']) dispatch(RESET_SCORE());
-    setQuestionCount(questionCount + 1)
-
+    gameStateDispatcher(INCREASE_QUESTION_COUNT())
     const { value1, value2 } = makeQuestion();
-    setAddends(() => {
-      return {
-        value1, value2
-      }
-    });
+    gameStateDispatcher(SET_ADDENDS(value1, value2));
     scoreDropper();
-  }, [ dispatch, scoreDropper, score, questionCount ]);
+  }, [ dispatch, scoreDropper, score ]);
 
   const newQuestion = useCallback(() => {
     if (score !== CONSTANTS['INITIAL_SCORE']) dispatch(RESET_SCORE());
 
-    setQuestionCount(questionCount+ 1);
+    gameStateDispatcher(INCREASE_QUESTION_COUNT())
     const { value1, value2 } = makeQuestion();
-    setAddends({ value1, value2 });
+    gameStateDispatcher(SET_ADDENDS(value1, value2));
     dispatch(RESET_GUESS());
     scoreDropper();
-  }, [ dispatch, score, scoreDropper, questionCount ]);
+  }, [ dispatch, score, scoreDropper ]);
 
   const submitAnswer = async () => {
     if (disableSubmit) {
@@ -86,7 +143,7 @@ const Play = ({
       );
 
     if (correct) dispatch(INCREASE_TOTAL_SCORE(score));
-    setAnswerCorrect(correct);
+    gameStateDispatcher(CORRECT_ANSWER());
     await sleep(SUCCESS_MARKER_DURATION);
     dispatch(PUSH_CORRECT_QUESTION({
       value1: addends.value1,
@@ -97,7 +154,7 @@ const Play = ({
     }));
 
     setDisableSubmit(false);
-    setAnswerCorrect(null);
+    gameStateDispatcher(RESET_CORRECT_ANSWER());
     newQuestion();
     return;
   };
@@ -107,18 +164,18 @@ const Play = ({
     setDropScore(false);
     setQuestionStartTime(null);
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
-      setAnswerCorrect(false);
-      await sleep(SUCCESS_MARKER_DURATION);
-      setAnswerCorrect(null);
-      setDisableSubmit(false);
-      newQuestion();
-      dispatch(PUSH_QUESTION({
-        value1: addends.value1,
-        value2: addends.value2,
-        answer,
-        score: 0,
-        correct: false
-      }));
+    gameStateDispatcher(INCORRECT_ANSWER());
+    await sleep(SUCCESS_MARKER_DURATION);
+    gameStateDispatcher(RESET_CORRECT_ANSWER());
+    setDisableSubmit(false);
+    newQuestion();
+    dispatch(PUSH_QUESTION({
+      value1: addends.value1,
+      value2: addends.value2,
+      answer,
+      score: 0,
+      correct: false
+    }));
     }, [ answer, dispatch, newQuestion, addends, setDropScore, setQuestionStartTime ]);
 
   useEffect(() => {
