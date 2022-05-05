@@ -69,11 +69,11 @@ const Home: React.FC<HomeProps> = ({view, dispatch, scoreInterval, newHighScore,
         <meta name="description" content="A math flash card app" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {view !== 'play' ? (
-        <GameInfo />
-      ) : (
+      {
+        view !== 'play' ?
+        <GameInfo /> :
         <Play />
-      )}
+      }
       <div
         className={`${styles.OpenFullScreen} ${view === 'play' && styles.playOpenFullScreen}`}
       >
