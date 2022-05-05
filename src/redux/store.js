@@ -10,7 +10,7 @@ import {
   newHighScoreReducer,
 } from './reducers/index';
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
     input: inputReducer,
     score: scoreReducer,
     totalScore: totalScoreReducer,
