@@ -51,7 +51,7 @@ const GameInfo: React.FC<GameInfo> = ({
 }) => {
   const [ activeSwipe, setActiveSwipe ] = useState(false);
   const [ openReview, setOpenReview ] = useState(false);
-  const [ activeResult, setActiveResult ] = useState(0)
+  const [ activeResult, setActiveResult ] = useState(0);
   const maxResult: number = results.length;
 
   const onSwipeMove = (position: SwipePosition) => {
@@ -107,13 +107,17 @@ const GameInfo: React.FC<GameInfo> = ({
         madeHighScore={madeHighScore}
         totalScore={totalScore}
       />
-      {view === 'welcome' && (
-        <Stats
-          view={view}
-          highScore={highScore}
-        />
-      )}
-      { view === 'done' && (!openReview ? (
+      {
+        view === 'welcome' && 
+        (
+          <Stats
+            view={view}
+            highScore={highScore}
+          />
+        )
+      }
+      {
+        view === 'done' && (!openReview ? (
           <Stats
             view={view}
             totalScore={totalScore}
@@ -139,25 +143,27 @@ const GameInfo: React.FC<GameInfo> = ({
           </div>
         ))
       }
-      { view === 'done' && (
-        <div className={styles.reviewButtonContainer}>
+      <div className={styles.buttonContainer}>
+        { view === 'done' && (
+          <div className={styles.reviewButtonContainer}>
+            <Button
+              className={styles.reviewButton}
+              onClick={handleReview}
+            >
+              {openReview ? 'close results' : 'review results'}
+              <SearchIcon />
+            </Button>
+          </div>
+        )}
+        <div className={styles.playButtonContainer}>
           <Button
-            className={styles.reviewButton}
-            onClick={handleReview}
+            className={styles.playButton}
+            onClick={handlePlay}
           >
-            {openReview ? 'close results' : 'review results'}
-            <SearchIcon />
+            {view === 'done' ? 'play again' : 'start game'}
+            <CasinoIcon />
           </Button>
         </div>
-      )}
-      <div className={styles.playButtonContainer}>
-        <Button
-          className={styles.playButton}
-          onClick={handlePlay}
-        >
-          {view === 'done' ? 'play again' : 'start game'}
-          <CasinoIcon />
-        </Button>
       </div>
     </Swipe>
   );
