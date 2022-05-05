@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
 const useFullScreenAPI = () => {
-  const [ isFullScreen, setIsFullScreen ] = useState(false);
+  const [ isFullScreen, setIsFullScreen ] = useState<boolean>(false);
   const [ fullScreenError, setFullScreenError ] = useState('');
   const [ openError, setOpenError ] = useState(false);
 
-  function toggleFullScreen(): void {
+  const toggleFullScreen = (): void => {
     const browserFScreenProp: string = getBrowserFullscreenElementProp();
   
     if (!browserFScreenProp) {
@@ -46,7 +46,7 @@ const useFullScreenAPI = () => {
 
 export default useFullScreenAPI;
 
-function getBrowserFullscreenElementProp() {
+function getBrowserFullscreenElementProp(): string {
   if (typeof document['fullscreenElement'] !== "undefined") {
     return "fullscreenElement";
   } else if (typeof document['mozFullScreenElement'] !== "undefined") {
