@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
+import { State, AppDispatch } from '../../redux/store';
 import styles from '../../styles/KeyboardInput.module.scss';
 import { INPUT_NUMBER, DELETE_NUMBER, RESET_GUESS } from '../../redux/actions/inputActionTypes';
 import isNumber from '../../helpers/isNumber';
@@ -7,7 +8,15 @@ import useDeviceCheck from '../../hooks/useDeviceCheck';
 
 const MAX_CHAR = process.env.NEXT_PUBLIC_MAX_ANSWER_LENGTH;
 
-function mapStateToProps(state) {
+interface KeyboardInput {
+  answer: string,
+  dispatch: AppDispatch,
+  reviewAnswer: boolean,
+  view: string,
+  submitAnswer: Function,
+}
+
+function mapStateToProps(state: State) {
   return {
     answer: state.input.answer,
     view: state.view.view,
@@ -15,7 +24,7 @@ function mapStateToProps(state) {
   };
 }
 
-const formatValue = (value) => {
+const formatValue = (value: string) => {
   return (
     value === '' ? '' : parseInt(value).toLocaleString('en-US')
   );
@@ -29,7 +38,7 @@ const KeyboardInput = ({
   submitAnswer,
 }) => {
   const isMobile = useDeviceCheck();
-  const handleKeyDown = useCallback((e) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>): void => {
     const { key } = e;
     const specialKeys: {
       'Backspace': Function,
@@ -42,10 +51,10 @@ const KeyboardInput = ({
       specialKeys[key]();
     }
 
-  }, [ dispatch ]);
+  }, [dispatch]);
 
 
-  const handleKeyPress = useCallback(function(e) {
+  const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>): void => {
     const { key }: { key: string } = e;
     if (isNumber(key) && answer.length < MAX_CHAR) {
       dispatch(INPUT_NUMBER(key));
@@ -53,7 +62,7 @@ const KeyboardInput = ({
     if (key === 'Enter') {
       submitAnswer();
     }
-  }, [ dispatch, submitAnswer, answer ]);
+  }, [dispatch, submitAnswer, answer]);
 
   return (
     <input
