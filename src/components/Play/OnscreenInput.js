@@ -19,7 +19,7 @@ const keyboardLayout = {
 };
 
 const OnscreenInput = ({ dispatch, answer }) => {
-  const isMobile = useDeviceCheck();
+  const {isMobile} = useDeviceCheck();
 
   const keyboardSpecialActions = {
     'clear': () => dispatch(RESET_GUESS()),

@@ -37,7 +37,7 @@ const KeyboardInput = ({
   view,
   submitAnswer,
 }) => {
-  const isMobile = useDeviceCheck();
+  const {isMobile} = useDeviceCheck();
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>): void => {
     const { key } = e;
     const specialKeys: {
