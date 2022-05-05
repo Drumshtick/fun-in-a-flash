@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {connect} from 'react-redux';
 import {KeyboardInput, QuestionScore, EnterAnswer, ResultPrompt} from './index';
-import Swipe, {SwipePosition} from 'react-easy-swipe';
+import Swipe, {SwipePosition, SwipeEvent} from 'react-easy-swipe';
 import styles from '../../styles/QuestionArea.module.scss';
 const MIN_SWIPE_DELTA: number = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
 
@@ -20,13 +20,13 @@ interface ReviewState {
 }
 
 interface QuestionArea {
-  value1: number,
-  value2: number,
+  value1?: number,
+  value2?: number,
   reviewState?: ReviewState,
-  submitAnswer: Function,
-  view: string,
+  submitAnswer?: Function,
+  view?: string,
   correct: boolean,
-  disableSubmit: boolean
+  disableSubmit?: boolean
 }
 
 const QuestionArea: React.FC<QuestionArea> = ({
@@ -40,7 +40,7 @@ const QuestionArea: React.FC<QuestionArea> = ({
 }) => {
   const [ activeSwipe, setActiveSwipe ] = useState(false);
   const [ swipeAction, setSwipeAction ] = useState(false);
-  const onSwipeMove = (position: SwipePosition) => {
+  const onSwipeMove = (position: SwipePosition ,e: SwipeEvent): void => {
     if (activeSwipe || !submitAnswer) return;
     toggleSwipeAction();
     setActiveSwipe(true);
@@ -63,9 +63,10 @@ const QuestionArea: React.FC<QuestionArea> = ({
   }, [ correct, submitAnswer ])
   
   return (
+    // @ts-ignore
     <Swipe
       className={`${styles.container} ${swipeAction && styles.swiping}`}
-      onSwipeMove={onSwipeMove}
+      onSwipeMove={(position, e) => onSwipeMove(position, e)}
     >
       <QuestionScore reviewScore={view === 'done' && reviewState.score} />
       {correct !== null && <ResultPrompt correct={correct} />}
