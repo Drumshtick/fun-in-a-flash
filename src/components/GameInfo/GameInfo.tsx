@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import Swipe from 'react-easy-swipe';
-import debounce from '../../helpers/debounce';
+import Swipe, {SwipeEvent, SwipePosition} from 'react-easy-swipe';
 import { Button } from '@mui/material';
 import { InfoHeader, Stats } from './index';
 import { QuestionArea } from '../Play/index';
 
 import { connect } from 'react-redux';
+import { AppDispatch, State, Results } from '../../redux/store';
 import { SWITCH_VIEW_TO_PLAY } from '../../redux/actions/viewActionTypes';
 import { RESET_RESULTS } from '../../redux/actions/setResultsActionTypes';
 import { RESET_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
@@ -17,14 +17,15 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import styles from '../../styles/GameInfo.module.scss';
 
 const MIN_SWIPE_DELTA: number = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
-const DEBOUNCE_DELAY: number = parseInt(process.env.NEXT_PUBLIC_DEBOUNCE_SWIPE_DELAY);
 
-interface State {
-  view: {view: string},
-  totalScore: {totalScore: number},
-  results: {correct: number, results: Array<Object>},
-  highScore: {highScore: number},
-  madeHighScore: {madeHighScore: boolean},
+interface GameInfo {
+  view: string,
+  dispatch: AppDispatch,
+  totalScore: number,
+  accuracy: number,
+  results: Array<Results>,
+  highScore: number,
+  madeHighScore: boolean
 }
 
 const mapStateToProps = (state: State) => {
@@ -39,7 +40,7 @@ const mapStateToProps = (state: State) => {
 }
 
 
-const GameInfo = ({
+const GameInfo: React.FC<GameInfo> = ({
   view,
   dispatch,
   totalScore,
@@ -48,17 +49,21 @@ const GameInfo = ({
   highScore,
   madeHighScore
 }) => {
+  const [ activeSwipe, setActiveSwipe ] = useState(false);
   const [ openReview, setOpenReview ] = useState(false);
   const [ activeResult, setActiveResult ] = useState(0)
-  const maxResult = results.length;
-  const onSwipeMove = (position) => {
+  const maxResult: number = results.length;
+
+  const onSwipeMove = (position: SwipePosition) => {
+    if (activeSwipe) return;
+    setActiveSwipe(true);
     if (position.x < 0 && position.x < (MIN_SWIPE_DELTA * -1)) {
       handleNextResult();
     }
-
     if (position.x > 0 && position.x > MIN_SWIPE_DELTA) {
       handleLastResult();
     }
+    setActiveSwipe(false);
   };
 
   const handlePlay = () => {
@@ -94,7 +99,7 @@ const GameInfo = ({
   return (
     // @ts-ignore
     <Swipe
-      onSwipeMove={debounce(onSwipeMove, DEBOUNCE_DELAY)}
+      onSwipeMove={onSwipeMove}
       className={styles.mainContainer}
     >
       <InfoHeader
