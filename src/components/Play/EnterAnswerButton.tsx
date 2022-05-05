@@ -3,11 +3,17 @@ import IconButton from '@mui/material/IconButton';
 import styles from '../../styles/EnterAnswer.module.scss';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-const EnterAnswer = ({ submitAnswer, disableSubmit }) => {
+interface EnterAnswer {
+  submitAnswer: Function,
+  disableSubmit: boolean
+}
+
+const EnterAnswer: React.FC<EnterAnswer> = ({ submitAnswer, disableSubmit }) => {
   return (
+    //@ts-ignore
     <IconButton
+      className={`${styles.btn} ${disableSubmit && styles.clicked}`}
       disabled={disableSubmit}
-      className={styles.btn}
       onClick={submitAnswer}
     >
       <CheckCircleIcon />
