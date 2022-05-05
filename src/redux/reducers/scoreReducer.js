@@ -12,7 +12,7 @@ const scoreReducer = (state = initState, action) => {
   }
 
   if (action.type === 'RESET_SCORE') {
-    return { score: initState.score }
+    return { score: initState.score + action.value}
   }
 
   return { score: state.score };
