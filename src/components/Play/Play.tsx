@@ -53,13 +53,14 @@ const Play: React.FC<PlayProps> = ({
   scoreInterval,
   highScore,
 }) => {
-  const [ gameState, gameStateDispatcher ] = useReducer(gameStateReducer, initGameState);
+  const [gameState, gameStateDispatcher] = useReducer(gameStateReducer, initGameState);
   const {
     addends,
     answerCorrect,
     questionCount
   } = gameState;
-  const [ disableSubmit, setDisableSubmit ] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(false);
+  const [outOfTime, setOutOfTime] = useState(false);
   const {
     scoreDropper,
     setDropScore,
@@ -69,22 +70,23 @@ const Play: React.FC<PlayProps> = ({
   const startQuestions = useCallback(async () => {
     // first question
     dispatch(NEW_HIGH_SCORE_RESET());
-    if (score !== CONSTANTS['INITIAL_SCORE']) dispatch(RESET_SCORE());
+    dispatch(RESET_SCORE());
     gameStateDispatcher(INCREASE_QUESTION_COUNT())
     const { value1, value2 } = makeQuestion();
     gameStateDispatcher(SET_ADDENDS(value1, value2));
     scoreDropper();
-  }, [ dispatch, scoreDropper, score ]);
+  }, [dispatch, scoreDropper]);
 
   const newQuestion = useCallback(() => {
-    if (score !== CONSTANTS['INITIAL_SCORE']) dispatch(RESET_SCORE());
-
+    const { REDUCE_SCORE_BY } = CONSTANTS;
     gameStateDispatcher(INCREASE_QUESTION_COUNT())
     const { value1, value2 } = makeQuestion();
     gameStateDispatcher(SET_ADDENDS(value1, value2));
     dispatch(RESET_GUESS());
+    dispatch(RESET_SCORE(REDUCE_SCORE_BY));
+    setOutOfTime(false);
     scoreDropper();
-  }, [ dispatch, score, scoreDropper ]);
+  }, [dispatch, scoreDropper]);
 
   const submitAnswer = async (): Promise<null> => {
     if (disableSubmit) {
@@ -113,6 +115,7 @@ const Play: React.FC<PlayProps> = ({
   };
   
   const endQuestion = useCallback(async () => {
+    dispatch(RESET_GUESS());
     setDisableSubmit(true);
     setDropScore(false);
     setQuestionStartTime(null);
@@ -136,15 +139,16 @@ const Play: React.FC<PlayProps> = ({
     if (questionCount === 0) {
       startQuestions();
     }
-  }, [ dispatch, scoreDropper, questionCount, startQuestions, totalScore ]);
+  }, [questionCount, startQuestions, answerCorrect]);
 
 
   useEffect(() => {
     // Out of time
-    if (score <= 0) {
+    if (score <= 0  && !outOfTime) {
+      setOutOfTime(true);
       endQuestion();
     }
-  }, [ score, endQuestion ])
+  }, [score, endQuestion, outOfTime, dispatch])
 
   useEffect(() => {
     // End game
@@ -152,7 +156,6 @@ const Play: React.FC<PlayProps> = ({
       if (highScore < totalScore) {
         dispatch(NEW_HIGH_SCORE());
         dispatch(SET_HIGH_SCORE(totalScore));
-        window.localStorage.setItem('HighScore', JSON.stringify(totalScore));
       }
       if (scoreInterval) {
         clearInterval(scoreInterval);
@@ -160,9 +163,13 @@ const Play: React.FC<PlayProps> = ({
       }
       dispatch(SWITCH_VIEW_TO_DONE());
     }
-  }, [ questionCount, dispatch, highScore, totalScore, scoreInterval ]);
+  }, [questionCount, dispatch, highScore, totalScore, scoreInterval]);
 
-
+  useEffect(() => {
+    // console.log(addends)
+    console.log(score)
+    // console.log(questionCount)
+  }, [score])
 
   return (
     <div className={styles.container}>
