@@ -3,9 +3,16 @@ import StarsIcon from '@mui/icons-material/Stars';
 import CheckIcon from '@mui/icons-material/Check';
 import styles from '../../styles/Stats.module.scss';
 
-const TOTAL_QUESTIONS = process.env.NEXT_PUBLIC_TOTAL_QUESTIONS
+const TOTAL_QUESTIONS: string = process.env.NEXT_PUBLIC_TOTAL_QUESTIONS
 
-const Stats = ({
+interface Stats {
+  view: string,
+  accuracy?: number,
+  totalScore?: number,
+  highScore: number,
+}
+
+const Stats: React.FC<Stats> = ({
   view,
   accuracy,
   totalScore,
