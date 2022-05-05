@@ -7,10 +7,32 @@ interface GameStateTypes {
   questionCount: number
 }
 
-interface actionTypes {
+interface ActionTypes {
   type: string,
-  value1?: null | number,
-  value2?: null | number
+  value1?: number,
+  value2?: number
+}
+
+interface QuestionCountAction {
+  type: 'INCREASE_QUESTION_COUNT',
+}
+
+interface CorrectAnswerAction {
+  type: 'CORRECT_ANSWER'
+}
+
+interface IncorrectAnswerAction {
+  type: 'INCORRECT_ANSWER'
+}
+
+interface ResetCorrectAnswerAction {
+  type: 'RESET_CORRECT_ANSWER'
+}
+
+interface SetAddendAction {
+  type: 'SET_ADDENDS',
+  value1: null | number,
+  value2: null | number
 }
 
 const initGameState: GameStateTypes = {
@@ -23,7 +45,7 @@ const initGameState: GameStateTypes = {
 }
 
 
-const gameStateReducer = (state, action: actionTypes):  GameStateTypes => {
+const gameStateReducer = (state: GameStateTypes, action: ActionTypes):  GameStateTypes => {
   if (action.type === 'INCREASE_QUESTION_COUNT') {
     return { ...state, questionCount: state.questionCount + 1 }
   }
@@ -47,11 +69,11 @@ const gameStateReducer = (state, action: actionTypes):  GameStateTypes => {
   return state;
 };
 
-const INCREASE_QUESTION_COUNT = (): actionTypes => ({ type: 'INCREASE_QUESTION_COUNT'});
-const CORRECT_ANSWER = (): actionTypes => ({ type: 'CORRECT_ANSWER'});
-const INCORRECT_ANSWER = (): actionTypes => ({ type: 'INCORRECT_ANSWER'});
-const RESET_CORRECT_ANSWER = (): actionTypes => ({ type: 'RESET_CORRECT_ANSWER'});
-const SET_ADDENDS = (value1, value2): actionTypes => ({ type: 'SET_ADDENDS', value1, value2});
+const INCREASE_QUESTION_COUNT = (): QuestionCountAction => ({ type: 'INCREASE_QUESTION_COUNT'});
+const CORRECT_ANSWER = (): CorrectAnswerAction => ({ type: 'CORRECT_ANSWER'});
+const INCORRECT_ANSWER = (): IncorrectAnswerAction => ({ type: 'INCORRECT_ANSWER'});
+const RESET_CORRECT_ANSWER = (): ResetCorrectAnswerAction => ({ type: 'RESET_CORRECT_ANSWER'});
+const SET_ADDENDS = (value1: number, value2: number): SetAddendAction => ({ type: 'SET_ADDENDS', value1, value2});
 
 export {
   INCREASE_QUESTION_COUNT,
