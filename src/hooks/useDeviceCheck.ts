@@ -17,7 +17,6 @@ const useDeviceCheck = () => {
     }, []);
 
     useEffect(() => {
-      console.log(width)
       if (width && width <= 768) {
         setIsMobile(true);
         return;

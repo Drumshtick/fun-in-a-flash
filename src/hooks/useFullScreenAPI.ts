@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const useFullScreenAPI = () => {
-  const [ isFullScreen, setIsFullScreen ] = useState<boolean>(false);
-  const [ fullScreenError, setFullScreenError ] = useState('');
-  const [ openError, setOpenError ] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [clickedFullScreen, setClickedFullScreen] = useState(false);
+  const [fullScreenError, setFullScreenError] = useState('');
+  const [openError, setOpenError] = useState(false);
 
   const toggleFullScreen = (): void => {
+    setClickedFullScreen(true);
     const browserFScreenProp: string = getBrowserFullscreenElementProp();
-  
-    if (!browserFScreenProp) {
+    if (!browserFScreenProp || !document.fullscreenEnabled) {
       setFullScreenError('Unable to start fullscreen, please try another browser');
       setOpenError(true);
       return;
@@ -23,14 +24,29 @@ const useFullScreenAPI = () => {
         setIsFullScreen(false);
       }
     }
+    setClickedFullScreen(false);
   }
+
+  const handleKeyDown = (): void => {
+    if (!isFullScreen && !clickedFullScreen) {
+      setIsFullScreen(false);
+    }
+  };
   
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      window.addEventListener('fullscreenchange', handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener('fullscreenchange', handleKeyDown);
+    };
+  }, [])
 
   const handleErrorSnackClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
-
     setOpenError(false);
   };
 
