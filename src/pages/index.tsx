@@ -13,6 +13,8 @@ import useFullScreenAPI from '../hooks/useFullScreenAPI';
 import useDeviceCheck from '../hooks/useDeviceCheck';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import localStorageCheck from '../helpers/localStorageCheck';
+
 const mapStateToProps = (state) => {
   return {
     view: state.view.view,
@@ -35,7 +37,7 @@ const Home: React.FC<HomeProps> = ({view, dispatch, scoreInterval, newHighScore,
   const {isFullScreen, handleErrorSnackClose, toggleFullScreen, openError, fullScreenError} = useFullScreenAPI();
 
   useEffect(() => {
-    if (typeof window !== undefined) {
+    if (typeof window !== undefined && localStorageCheck('localStorage')) {
       const highScore: string = JSON.parse(window.localStorage.getItem('HighScore'));
       if (highScore) {
         dispatch(SET_HIGH_SCORE(highScore))
@@ -46,17 +48,17 @@ const Home: React.FC<HomeProps> = ({view, dispatch, scoreInterval, newHighScore,
   }, []);
 
   useEffect(() => {
+    if (newHighScore && highScore && localStorageCheck('localStorage')) {
+      window.localStorage.setItem('HighScore', JSON.stringify(highScore));
+    }
+  }, [newHighScore, highScore]);
+
+  useEffect(() => {
     if (scoreInterval && view !== 'play') {
       clearInterval(scoreInterval);
       dispatch(CLEAR_INTERVAL_ID());
     }
   }, [scoreInterval, dispatch, view])
-
-  useEffect(() => {
-    if (newHighScore && highScore) {
-      window.localStorage.setItem('HighScore', JSON.stringify(highScore));
-    }
-  }, [newHighScore, highScore])
 
   return (
     <div
