@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { AppDispatch, State } from '../redux/store';
 import { SET_HIGH_SCORE } from '../redux/actions/highScoreActionTypes';
 import { CLEAR_INTERVAL_ID } from '../redux/actions/scoreIntervalActionTypes';
 import Head from 'next/head';
@@ -15,7 +16,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import localStorageCheck from '../helpers/localStorageCheck';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   return {
     view: state.view.view,
     scoreInterval: state.scoreInterval.ID,
@@ -26,9 +27,9 @@ const mapStateToProps = (state) => {
 
 interface HomeProps {
   view: string,
-  dispatch: any,
+  dispatch: AppDispatch,
   scoreInterval: number,
-  newHighScore: number,
+  newHighScore: boolean,
   highScore: number
 }
 
