@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback, useState, useReducer } from 'react';
 import { connect } from 'react-redux';
+import { AppDispatch, State } from '../../redux/store';
 import styles from '../../styles/Play.module.scss';
 import { GameHeader, QuestionArea, OnscreenInput } from './index';
 import { RESET_GUESS } from '../../redux/actions/inputActionTypes';
@@ -25,7 +26,7 @@ import {
   initGameState
 } from './gameStateReducer';
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State) {
   return {
     answer: state.input.answer,
     score: state.score.score,
@@ -37,7 +38,7 @@ function mapStateToProps(state) {
 }
 
 interface PlayProps {
-  dispatch: any,
+  dispatch: AppDispatch,
   answer: string,
   score: number,
   totalScore: number,
@@ -72,7 +73,7 @@ const Play: React.FC<PlayProps> = ({
     dispatch(NEW_HIGH_SCORE_RESET());
     dispatch(RESET_SCORE());
     gameStateDispatcher(INCREASE_QUESTION_COUNT())
-    const { value1, value2 } = makeQuestion();
+    const { value1, value2 }: {value1: number, value2: number} = makeQuestion();
     gameStateDispatcher(SET_ADDENDS(value1, value2));
     scoreDropper();
   }, [dispatch, scoreDropper]);
@@ -80,7 +81,7 @@ const Play: React.FC<PlayProps> = ({
   const newQuestion = useCallback(() => {
     const { REDUCE_SCORE_BY } = CONSTANTS;
     gameStateDispatcher(INCREASE_QUESTION_COUNT())
-    const { value1, value2 } = makeQuestion();
+    const { value1, value2 }: {value1: number, value2: number} = makeQuestion();
     gameStateDispatcher(SET_ADDENDS(value1, value2));
     dispatch(RESET_GUESS());
     dispatch(RESET_SCORE(REDUCE_SCORE_BY));
@@ -132,7 +133,7 @@ const Play: React.FC<PlayProps> = ({
       score: 0,
       correct: false
     }));
-    }, [ answer, dispatch, newQuestion, addends, setDropScore, setQuestionStartTime ]);
+    }, [answer, dispatch, newQuestion, addends, setDropScore, setQuestionStartTime]);
 
   useEffect(() => {
     // Start Game
@@ -164,12 +165,6 @@ const Play: React.FC<PlayProps> = ({
       dispatch(SWITCH_VIEW_TO_DONE());
     }
   }, [questionCount, dispatch, highScore, totalScore, scoreInterval]);
-
-  useEffect(() => {
-    // console.log(addends)
-    console.log(score)
-    // console.log(questionCount)
-  }, [score])
 
   return (
     <div className={styles.container}>
