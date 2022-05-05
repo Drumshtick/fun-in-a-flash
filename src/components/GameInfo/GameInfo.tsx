@@ -16,11 +16,18 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 import styles from '../../styles/GameInfo.module.scss';
 
-const MIN_SWIPE_DELTA = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
-const DEBOUNCE_DELAY = parseInt(process.env.NEXT_PUBLIC_DEBOUNCE_SWIPE_DELAY);
+const MIN_SWIPE_DELTA: number = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
+const DEBOUNCE_DELAY: number = parseInt(process.env.NEXT_PUBLIC_DEBOUNCE_SWIPE_DELAY);
 
+interface State {
+  view: {view: string},
+  totalScore: {totalScore: number},
+  results: {correct: number, results: Array<Object>},
+  highScore: {highScore: number},
+  madeHighScore: {madeHighScore: boolean},
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   return {
     view: state.view.view,
     totalScore: state.totalScore.totalScore,
@@ -85,6 +92,7 @@ const GameInfo = ({
   };
 
   return (
+    // @ts-ignore
     <Swipe
       onSwipeMove={debounce(onSwipeMove, DEBOUNCE_DELAY)}
       className={styles.mainContainer}
