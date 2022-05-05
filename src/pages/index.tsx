@@ -34,7 +34,7 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({view, dispatch, scoreInterval, newHighScore, highScore}) => {
-  const isMobile: boolean = useDeviceCheck();
+  const {isMobile} = useDeviceCheck();
   const {isFullScreen, handleErrorSnackClose, toggleFullScreen, openError, fullScreenError} = useFullScreenAPI();
 
   useEffect(() => {
