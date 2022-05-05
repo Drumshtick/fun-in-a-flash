@@ -3,7 +3,7 @@
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  height: 60%;
+  height: 100%;
   position: relative;
   .reviewContainer {
     display: flex;
@@ -61,50 +61,51 @@
       }
     }
   }
-  .playButtonContainer {
-    position: absolute;
-    bottom: -14em;
-    left: 3.2em;
+  .buttonContainer {
+    height: 20em;
     display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    .playButton {
-      height: 3em;
-      min-width: 20em;
-      box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-      font-size: 1em;
-      width: 70%;
-      background-color: #BBFAD4;
-      color: #333;
-      font-weight: 600;
-      text-transform: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    .playButtonContainer {
       display: flex;
-      justify-content: space-around;
-      padding: 0.5em 2em;
+      align-items: flex-end;
+      justify-content: center;
+      .playButton {
+        height: 3em;
+        min-width: 20em;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+        font-size: 1em;
+        width: 70%;
+        background-color: #BBFAD4;
+        color: #333;
+        font-weight: 600;
+        text-transform: none;
+        display: flex;
+        justify-content: space-around;
+        padding: 0.5em 2em;
+      }
     }
-  }
-  .reviewButtonContainer {
-    position: absolute;
-    bottom: -10em;
-    left: 3.2em;
-    height: 33%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    margin-bottom: 0em;
-    .reviewButton {
-      height: 3em;
-      min-width: 20em;
-      box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-      font-size: 1em;
-      width: 70%;
-      background-color: #fff;
-      color: #333;
-      font-weight: 600;
-      text-transform: none;
+    .reviewButtonContainer {
+      height: 33%;
       display: flex;
-      justify-content: space-around;
-      padding: 0.5em 2em;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1em;
+      .reviewButton {
+        height: 3em;
+        min-width: 20em;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+        font-size: 1em;
+        width: 70%;
+        background-color: #fff;
+        color: #333;
+        font-weight: 600;
+        text-transform: none;
+        display: flex;
+        justify-content: space-around;
+        padding: 0.5em 2em;
+      }
     }
   }
 }

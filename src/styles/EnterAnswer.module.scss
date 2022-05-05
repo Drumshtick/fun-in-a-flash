@@ -8,6 +8,7 @@
   min-height: 50px;
   border-radius: 10px;
   z-index: -1;
+  transition: color 1s;
   svg {
     color: rgb(17, 218, 17);
     font-size: 1.5em;
@@ -15,4 +16,9 @@
 }
 .btn:hover {
   background-color: #fff;
+}
+.clicked {
+  svg {
+    color: black;
+  }
 }
