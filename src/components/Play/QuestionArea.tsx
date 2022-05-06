@@ -42,31 +42,31 @@ const QuestionArea: React.FC<QuestionArea> = ({
   const [ swipeAction, setSwipeAction ] = useState(false);
   const onSwipeMove = (position: SwipePosition ,e: SwipeEvent): void => {
     if (activeSwipe || !submitAnswer) return;
-    toggleSwipeAction();
     setActiveSwipe(true);
     if (position.x < 0 && position.x < (MIN_SWIPE_DELTA * -1)) {
+      setSwipeAction(true);
       submitAnswer();
     }
     setActiveSwipe(false);
   };
-
-  const toggleSwipeAction = () => {
-    setSwipeAction(swipeAction ? false : true);
-  };
-
+  
   useEffect(() => {
-    if (correct == null ) {
-      setSwipeAction(false);
-      return;
+    if (swipeAction) {
+      var timerID: NodeJS.Timer = setTimeout(() => {
+        setSwipeAction(false);
+      }, 500)
     }
 
-  }, [ correct, submitAnswer ])
-  
+    return () => {
+      clearTimeout(timerID);
+    };
+  }, [swipeAction]);
+
   return (
     // @ts-ignore
     <Swipe
       className={`${styles.container} ${swipeAction && styles.swiping}`}
-      onSwipeMove={(position, e) => onSwipeMove(position, e)}
+      onSwipeMove={onSwipeMove}
     >
       <QuestionScore reviewScore={view === 'done' && reviewState.score} />
       {correct !== null && <ResultPrompt correct={correct} />}
