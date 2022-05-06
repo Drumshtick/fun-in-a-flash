@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Swipe, {SwipeEvent, SwipePosition} from 'react-easy-swipe';
 import { Button } from '@mui/material';
 import { InfoHeader, Stats } from './index';
@@ -13,7 +13,7 @@ import CasinoIcon from '@mui/icons-material/Casino';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-
+import _ from 'lodash';
 import styles from '../../styles/GameInfo.module.scss';
 
 const MIN_SWIPE_DELTA: number = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
@@ -56,14 +56,15 @@ const GameInfo: React.FC<GameInfo> = ({
 
   const onSwipeMove = (position: SwipePosition) => {
     if (activeSwipe) return;
-    setActiveSwipe(true);
     if (position.x < 0 && position.x < (MIN_SWIPE_DELTA * -1)) {
+      setActiveSwipe(true);
       handleNextResult();
+      return;
     }
     if (position.x > 0 && position.x > MIN_SWIPE_DELTA) {
+      setActiveSwipe(true);
       handleLastResult();
     }
-    setActiveSwipe(false);
   };
 
   const handlePlay = () => {
@@ -96,10 +97,22 @@ const GameInfo: React.FC<GameInfo> = ({
     setActiveResult(activeResult - 1);
   };
 
+  useEffect(() => {
+    if (activeSwipe) {
+      var timerID: NodeJS.Timer = setTimeout(() => {
+        setActiveSwipe(false)
+      }, 500)
+    }
+
+    return () => {
+      clearTimeout(timerID);
+    };
+  }, [activeSwipe]);
+
   return (
     // @ts-ignore
     <Swipe
-      onSwipeMove={onSwipeMove}
+      onSwipeMove={_.debounce(onSwipeMove, 250)}
       className={styles.mainContainer}
     >
       <InfoHeader
@@ -125,7 +138,7 @@ const GameInfo: React.FC<GameInfo> = ({
             highScore={highScore}
           />
         ) : (
-          <div className={styles.reviewContainer}>
+          <div className={`${styles.reviewContainer} ${activeSwipe && styles.activeSwipe}`}>
             <QuestionArea reviewState={results[activeResult]} correct={results[activeResult].correct} />
             <Button
               className={activeResult + 1 === maxResult ? styles.disabled : styles.nextBtn}
