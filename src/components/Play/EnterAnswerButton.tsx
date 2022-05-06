@@ -1,7 +1,7 @@
 import React from 'react';
 import IconButton from '@mui/material/IconButton';
-import styles from '../../styles/EnterAnswer.module.scss';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import styles from '../../styles/EnterAnswer.module.scss';
 
 interface EnterAnswer {
   submitAnswer: Function,
