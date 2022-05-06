@@ -3,7 +3,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  // box-sizing: content-box;
   height: 100vh;
   width: 100vw;
   background-color: #333;
@@ -29,3 +28,4 @@ button:disabled {
   cursor: not-allowed !important;
   background-color: #fff !important;
 }
+

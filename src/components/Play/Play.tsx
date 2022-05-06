@@ -62,6 +62,7 @@ const Play: React.FC<PlayProps> = ({
   } = gameState;
   const [disableSubmit, setDisableSubmit] = useState(false);
   const [outOfTime, setOutOfTime] = useState(false);
+  const [changeQuestion, setChangeQuestion] = useState(false);
   const {
     scoreDropper,
     setDropScore,
@@ -74,6 +75,7 @@ const Play: React.FC<PlayProps> = ({
     dispatch(RESET_SCORE());
     gameStateDispatcher(INCREASE_QUESTION_COUNT())
     const { value1, value2 }: {value1: number, value2: number} = makeQuestion();
+    setChangeQuestion(true);
     gameStateDispatcher(SET_ADDENDS(value1, value2));
     scoreDropper();
   }, [dispatch, scoreDropper]);
@@ -82,6 +84,7 @@ const Play: React.FC<PlayProps> = ({
     const { REDUCE_SCORE_BY } = CONSTANTS;
     gameStateDispatcher(INCREASE_QUESTION_COUNT())
     const { value1, value2 }: {value1: number, value2: number} = makeQuestion();
+    setChangeQuestion(true);
     gameStateDispatcher(SET_ADDENDS(value1, value2));
     dispatch(RESET_GUESS());
     dispatch(RESET_SCORE(REDUCE_SCORE_BY));
@@ -93,6 +96,7 @@ const Play: React.FC<PlayProps> = ({
     if (disableSubmit) {
       return;
     }
+    setChangeQuestion(false);
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
     setDropScore(false);
     setQuestionStartTime(null);
@@ -175,6 +179,8 @@ const Play: React.FC<PlayProps> = ({
         value1={addends.value1}
         value2={addends.value2}
         disableSubmit={disableSubmit}
+        changeQuestion={changeQuestion}
+        setChangeQuestion={setChangeQuestion}
       />
       <OnscreenInput />
     </div>  
