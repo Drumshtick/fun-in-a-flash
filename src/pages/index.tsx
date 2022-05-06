@@ -61,8 +61,6 @@ const Home: React.FC<HomeProps> = ({view, dispatch, scoreInterval, newHighScore,
     }
   }, [scoreInterval, dispatch, view])
 
-  useEffect(() => {console.log('isFullScreen: ', isFullScreen)}, [isFullScreen])
-
   return (
     <div
       className={`${styles.gameContainer} ${isMobile && styles.mobile}`}
