@@ -62,7 +62,6 @@
     }
   }
   .buttonContainer {
-    height: 20em;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -108,4 +107,8 @@
       }
     }
   }
+}
+
+.activeSwipe > div {
+  transform: scale(0.99)
 }
