@@ -2,7 +2,9 @@ import React, {useState, useEffect} from "react";
 import {connect} from 'react-redux';
 import {KeyboardInput, QuestionScore, EnterAnswer, ResultPrompt} from './index';
 import Swipe, {SwipePosition, SwipeEvent} from 'react-easy-swipe';
+
 import styles from '../../styles/QuestionArea.module.scss';
+
 const MIN_SWIPE_DELTA: number = parseInt(process.env.NEXT_PUBLIC_SWIPE_MIN_DELTA);
 
 function mapStateToProps(state) {
@@ -29,7 +31,6 @@ interface QuestionArea {
   disableSubmit?: boolean,
   changeQuestion?: boolean,
   changeScore?: boolean,
-  animationStateDispatch?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const QuestionArea: React.FC<QuestionArea> = ({
@@ -42,7 +43,6 @@ const QuestionArea: React.FC<QuestionArea> = ({
   disableSubmit,
   changeQuestion,
   changeScore,
-  animationStateDispatch
 }) => {
   const [ activeSwipe, setActiveSwipe ] = useState(false);
   const [ swipeAction, setSwipeAction ] = useState(false);
@@ -87,6 +87,7 @@ const QuestionArea: React.FC<QuestionArea> = ({
       <KeyboardInput
         reviewAnswer={reviewState && reviewState.answer}
         submitAnswer={submitAnswer}
+        disableSubmit={disableSubmit}
       />
   </Swipe>
   );
