@@ -19,3 +19,28 @@
     font-weight: inherit;
   }
 }
+
+@keyframes reduce-score {
+  0% {
+    font-size: 0.4em;
+  }
+  50% {
+    font-size: 0.45em;
+    // transform: translateY(2%)
+  }
+  100% {
+    font-size: 0.4em;
+  }
+}
+
+.scoreChange > p {
+  animation-name: reduce-score;
+  animation-duration: 500ms;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+}
+
+.lowScore {
+  color: #fb4b4b;
+}

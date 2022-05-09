@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { AppDispatch, State } from '../redux/store';
 import { SET_HIGH_SCORE } from '../redux/actions/highScoreActionTypes';
-import { CLEAR_INTERVAL_ID } from '../redux/actions/scoreIntervalActionTypes';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { IconButton, Snackbar, Alert } from '@mui/material';
@@ -28,12 +27,11 @@ const mapStateToProps = (state: State) => {
 interface HomeProps {
   view: string,
   dispatch: AppDispatch,
-  scoreInterval: number,
   newHighScore: boolean,
   highScore: number
 }
 
-const Home: React.FC<HomeProps> = ({view, dispatch, scoreInterval, newHighScore, highScore}) => {
+const Home: React.FC<HomeProps> = ({view, dispatch, newHighScore, highScore}) => {
   const {isMobile} = useDeviceCheck();
   const {isFullScreen, handleErrorSnackClose, toggleFullScreen, openError, fullScreenError} = useFullScreenAPI();
 
@@ -53,13 +51,6 @@ const Home: React.FC<HomeProps> = ({view, dispatch, scoreInterval, newHighScore,
       window.localStorage.setItem('HighScore', JSON.stringify(highScore));
     }
   }, [newHighScore, highScore]);
-
-  useEffect(() => {
-    if (scoreInterval && view !== 'play') {
-      clearInterval(scoreInterval);
-      dispatch(CLEAR_INTERVAL_ID());
-    }
-  }, [scoreInterval, dispatch, view])
 
   return (
     <div
