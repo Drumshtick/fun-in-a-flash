@@ -10,10 +10,12 @@ function mapStateToProps(state) {
   };
 }
 
-const QuestionScore = ({ score, reviewScore, view }) => {
+const QuestionScore = ({ score, reviewScore, view, changeScore }) => {
   return (
-    <div className={styles.score}>
-      <p>{view === 'done' ? reviewScore : score}</p>
+    <div className={`${styles.score} ${changeScore && styles.scoreChange} ${score <= 100 && styles.lowScore}`}>
+      <p>
+        {view === 'done' ? reviewScore : (score === 0 ? '----' : score)}
+      </p>
       <StarsIcon />
     </div>
   );

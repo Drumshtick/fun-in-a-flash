@@ -27,8 +27,9 @@ interface QuestionArea {
   view?: string,
   correct: boolean,
   disableSubmit?: boolean,
-  changeQuestion: boolean,
-  setChangeQuestion: React.Dispatch<React.SetStateAction<boolean>>
+  changeQuestion?: boolean,
+  changeScore?: boolean,
+  animationStateDispatch?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const QuestionArea: React.FC<QuestionArea> = ({
@@ -40,7 +41,8 @@ const QuestionArea: React.FC<QuestionArea> = ({
   correct,
   disableSubmit,
   changeQuestion,
-  setChangeQuestion
+  changeScore,
+  animationStateDispatch
 }) => {
   const [ activeSwipe, setActiveSwipe ] = useState(false);
   const [ swipeAction, setSwipeAction ] = useState(false);
@@ -67,25 +69,13 @@ const QuestionArea: React.FC<QuestionArea> = ({
     };
   }, [swipeAction]);
 
-  useEffect(() => {
-    let timerID: NodeJS.Timer
-    if (changeQuestion) {
-      timerID = setTimeout(() => {
-        setChangeQuestion(false);
-      }, 500)
-    }
-    return () => {
-      clearTimeout(timerID);
-    };
-  }, [changeQuestion, setChangeQuestion])
-
   return (
     // @ts-ignore
     <Swipe
       className={`${styles.container} ${swipeAction && styles.swiping}`}
       onSwipeMove={onSwipeMove}
     >
-      <QuestionScore reviewScore={view === 'done' && reviewState.score} />
+      <QuestionScore reviewScore={view === 'done' && reviewState.score} changeScore={changeScore}/>
       {correct !== null && <ResultPrompt correct={correct} />}
       {!reviewState && <EnterAnswer submitAnswer={submitAnswer} disableSubmit={disableSubmit} />}
       <div className={`${styles.questionContainer} ${changeQuestion && styles.questionChange}`}>
