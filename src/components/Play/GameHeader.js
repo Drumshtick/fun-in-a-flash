@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
 import { SWITCH_VIEW_TO_WELCOME } from '../../redux/actions/viewActionTypes';
 import { RESET_GUESS } from '../../redux/actions/inputActionTypes';
@@ -23,7 +23,9 @@ const GameHeader = ({
   questionCount,
   totalScore,
   dispatch,
-  scoreInterval
+  scoreInterval,
+  changeTotalScore,
+  animationStateDispatch
 }) => {
 
   const handleClick = () => {
@@ -37,6 +39,18 @@ const GameHeader = ({
     dispatch(RESET_RESULTS());
   };
 
+  useEffect(() => {
+    let timerID;
+    if (changeTotalScore) {
+      timerID = setTimeout(() => {
+        animationStateDispatch({type: 'CHANGE_TS_END'})
+      }, 500)
+    }
+    return () => {
+      clearTimeout(timerID);
+    };
+  }, [changeTotalScore, animationStateDispatch])
+
   return (
     <header className={styles.container}>
       <Button
@@ -47,7 +61,7 @@ const GameHeader = ({
       </Button>
       <div className={styles.scoreTotalContainer}>
         <p className={styles.scoreTotalLabel}>SCORE</p>
-        <div className={styles.scoreTotalValue}>
+        <div className={`${styles.scoreTotalValue} ${changeTotalScore && styles.scoreChange}`}>
           <p>{totalScore}</p>
           <StarsIcon />
         </div>
