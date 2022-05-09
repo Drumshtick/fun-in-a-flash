@@ -1,14 +1,20 @@
 import React from "react";
 import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
-import { connect } from 'react-redux';
-import { INPUT_NUMBER, DELETE_NUMBER, RESET_GUESS } from '../../redux/actions/inputActionTypes';
+import {connect} from 'react-redux';
+import {AppDispatch, State} from "../../redux/store";
+import {INPUT_NUMBER, DELETE_NUMBER, RESET_GUESS} from '../../redux/actions/inputActionTypes';
 import styles from '../../styles/GameInput.module.scss';
 import useDeviceCheck from '../../hooks/useDeviceCheck';
 
-const MAX_CHAR = process.env.NEXT_PUBLIC_MAX_ANSWER_LENGTH;
+const MAX_CHAR = parseInt(process.env.NEXT_PUBLIC_MAX_ANSWER_LENGTH, 10);
 
-function mapStateToProps(state) {
+interface OnscreenInput {
+  dispatch: AppDispatch,
+  answer: string
+}
+
+function mapStateToProps(state: State) {
   return {
     answer: state.input.answer
   };
@@ -18,15 +24,15 @@ const keyboardLayout = {
   default: ["1 2 3", "4 5 6", "7 8 9", "clear 0 backspace"],
 };
 
-const OnscreenInput = ({ dispatch, answer }) => {
+const OnscreenInput: React.FC<OnscreenInput> = ({ dispatch, answer }) => {
   const {isMobile} = useDeviceCheck();
 
   const keyboardSpecialActions = {
-    'clear': () => dispatch(RESET_GUESS()),
-    'backspace': () => dispatch(DELETE_NUMBER())
+    'clear': (): {type: string} => dispatch(RESET_GUESS()),
+    'backspace': (): {type: string} => dispatch(DELETE_NUMBER())
   };
 
-  const onKeyPress = (button) => {
+  const onKeyPress = (button: string) => {
     if (keyboardSpecialActions[button]) {
       keyboardSpecialActions[button]();
       return;
