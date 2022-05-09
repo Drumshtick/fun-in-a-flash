@@ -32,16 +32,6 @@ const useFullScreenAPI = () => {
       setIsFullScreen(false);
     }
   };
-  
-  useEffect(() => {
-    if (typeof window !== undefined) {
-      window.addEventListener('fullscreenchange', handleKeyDown);
-    }
-
-    return () => {
-      window.removeEventListener('fullscreenchange', handleKeyDown);
-    };
-  }, [])
 
   const handleErrorSnackClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
