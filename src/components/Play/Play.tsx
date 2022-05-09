@@ -1,21 +1,29 @@
 import React, { useEffect, useCallback, useState, useReducer } from 'react';
-import { connect } from 'react-redux';
-import { AppDispatch, State } from '../../redux/store';
-import styles from '../../styles/Play.module.scss';
-import { GameHeader, QuestionArea, OnscreenInput } from './index';
-import { RESET_GUESS } from '../../redux/actions/inputActionTypes';
-import { RESET_SCORE } from '../../redux/actions/scoreActionTypes';
-import { INCREASE_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
-import { CLEAR_INTERVAL_ID } from '../../redux/actions/scoreIntervalActionTypes';
-import { SWITCH_VIEW_TO_DONE } from '../../redux/actions/viewActionTypes';
-import { PUSH_QUESTION, PUSH_CORRECT_QUESTION } from '../../redux/actions/setResultsActionTypes';
-import { SET_HIGH_SCORE } from '../../redux/actions/highScoreActionTypes';
-import { NEW_HIGH_SCORE, NEW_HIGH_SCORE_RESET } from '../../redux/actions/newHighScoreActionTypes.js';
-import { makeQuestion } from "../../helpers/makeQuestion";
+
+import {connect} from 'react-redux';
+import {AppDispatch, State} from '../../redux/store';
+import {GameHeader, QuestionArea, OnscreenInput} from './index';
+import {RESET_GUESS} from '../../redux/actions/inputActionTypes';
+import {RESET_SCORE} from '../../redux/actions/scoreActionTypes';
+import {INCREASE_TOTAL_SCORE} from '../../redux/actions/totalScoreActionTypes';
+import {CLEAR_INTERVAL_ID} from '../../redux/actions/scoreIntervalActionTypes';
+import {SWITCH_VIEW_TO_DONE} from '../../redux/actions/viewActionTypes';
+import {PUSH_QUESTION, PUSH_CORRECT_QUESTION} from '../../redux/actions/setResultsActionTypes';
+import {SET_HIGH_SCORE} from '../../redux/actions/highScoreActionTypes';
+import {NEW_HIGH_SCORE, NEW_HIGH_SCORE_RESET} from '../../redux/actions/newHighScoreActionTypes.js';
+
+import {makeQuestion} from "../../helpers/makeQuestion";
 import sleep from "../../helpers/sleep";
 import CONSTANTS from "../../helpers/constants";
 import useScoreDropper from '../../hooks/useScoreDropper';
-
+import {
+  initAnimationState,
+  animationStateReducer,
+  CHANGE_Q_START,
+  CHANGE_Q_END,
+  CHANGE_TS_START,
+  CHANGE_S_END
+} from './animationStateReducer';
 import {
   INCREASE_QUESTION_COUNT,
   CORRECT_ANSWER,
@@ -25,6 +33,8 @@ import {
   gameStateReducer,
   initGameState
 } from './gameStateReducer';
+import styles from '../../styles/Play.module.scss';
+
 
 function mapStateToProps(state: State) {
   return {
@@ -45,35 +55,6 @@ interface PlayProps {
   scoreInterval: number,
   highScore: number,
 }
-
-interface AnimationState {
-  changeQuestion: boolean,
-  changeTotalScore: boolean,
-  changeScore: boolean,
-}
-
-const initAnimationState = {
-  changeQuestion: false,
-  changeTotalScore: false,
-  changeScore: false,
-}
-
-interface ActionTypes {
-  type: string
-}
-
-const animationStateReducer = (state: AnimationState, action: ActionTypes): AnimationState => {
-  const types = {
-    'CHANGE_Q_START': () => {return {...state, changeQuestion: true}},
-    'CHANGE_Q_END' : () => {return {...state, changeQuestion: false}},
-    'CHANGE_TS_START': () => {return {...state, changeTotalScore: true}},
-    'CHANGE_TS_END': () => {return {...state, changeTotalScore: false}},
-    'CHANGE_S_START': () => {return {...state, changeScore: true}},
-    'CHANGE_S_END': () => {return {...state, changeScore: false}}
-  }
-
-  return !types[action.type] ? state : types[action.type]();
-};
 
 const Play: React.FC<PlayProps> = ({
   dispatch,
@@ -103,7 +84,7 @@ const Play: React.FC<PlayProps> = ({
     dispatch(RESET_SCORE());
     gameStateDispatcher(INCREASE_QUESTION_COUNT())
     const { value1, value2 }: {value1: number, value2: number} = makeQuestion();
-    animationStateDispatch({type: 'CHANGE_Q_START'});
+    animationStateDispatch(CHANGE_Q_START());
     gameStateDispatcher(SET_ADDENDS(value1, value2));
     scoreDropper();
   }, [dispatch, scoreDropper]);
@@ -112,7 +93,7 @@ const Play: React.FC<PlayProps> = ({
     if (disableSubmit) return;
     gameStateDispatcher(INCREASE_QUESTION_COUNT())
     const { value1, value2 }: {value1: number, value2: number} = makeQuestion();
-    animationStateDispatch({type: 'CHANGE_Q_START'});
+    animationStateDispatch(CHANGE_Q_START());
     gameStateDispatcher(SET_ADDENDS(value1, value2));
     dispatch(RESET_GUESS());
     scoreDropper();
@@ -124,8 +105,8 @@ const Play: React.FC<PlayProps> = ({
     if (disableSubmit) {
       return;
     }
-    animationStateDispatch({type: 'CHANGE_Q_END'});
-    animationStateDispatch({type: 'CHANGE_TS_START'});
+    animationStateDispatch(CHANGE_Q_END());
+    animationStateDispatch(CHANGE_TS_START());
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
     setDropScore(false);
     setDisableSubmit(true);
@@ -199,7 +180,7 @@ const Play: React.FC<PlayProps> = ({
     if (!changeQuestion) return;
     // Change in question addends animation
     const timerID: ReturnType<typeof setTimeout> = setTimeout(() => {
-        animationStateDispatch({type: 'CHANGE_Q_END'});
+        animationStateDispatch(CHANGE_Q_END());
       }, 500)
     return () => {
       clearTimeout(timerID);
@@ -209,7 +190,7 @@ const Play: React.FC<PlayProps> = ({
   useEffect(() => {
     if (!changeScore) return;
     let timerID: NodeJS.Timer = setTimeout(() => {
-        animationStateDispatch({type: 'CHANGE_S_END'});
+        animationStateDispatch(CHANGE_S_END());
       }, 500)
     return () => {
       clearTimeout(timerID);
@@ -230,9 +211,7 @@ const Play: React.FC<PlayProps> = ({
         value2={addends.value2}
         disableSubmit={disableSubmit}
         changeQuestion={changeQuestion}
-        changeTotalScore={changeTotalScore}
         changeScore={changeScore}
-        animationStateDispatch={animationStateDispatch}
       />
       <OnscreenInput />
     </div>  
