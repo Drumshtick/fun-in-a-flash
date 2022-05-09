@@ -46,6 +46,35 @@ interface PlayProps {
   highScore: number,
 }
 
+interface AnimationState {
+  changeQuestion: boolean,
+  changeTotalScore: boolean,
+  changeScore: boolean,
+}
+
+const initAnimationState = {
+  changeQuestion: false,
+  changeTotalScore: false,
+  changeScore: false,
+}
+
+interface ActionTypes {
+  type: string
+}
+
+const animationStateReducer = (state: AnimationState, action: ActionTypes): AnimationState => {
+  const types = {
+    'CHANGE_Q_START': () => {return {...state, changeQuestion: true}},
+    'CHANGE_Q_END' : () => {return {...state, changeQuestion: false}},
+    'CHANGE_TS_START': () => {return {...state, changeTotalScore: true}},
+    'CHANGE_TS_END': () => {return {...state, changeTotalScore: false}},
+    'CHANGE_S_START': () => {return {...state, changeScore: true}},
+    'CHANGE_S_END': () => {return {...state, changeScore: false}}
+  }
+
+  return !types[action.type] ? state : types[action.type]();
+};
+
 const Play: React.FC<PlayProps> = ({
   dispatch,
   answer,
@@ -61,13 +90,12 @@ const Play: React.FC<PlayProps> = ({
     questionCount
   } = gameState;
   const [disableSubmit, setDisableSubmit] = useState(false);
-  const [outOfTime, setOutOfTime] = useState(false);
-  const [changeQuestion, setChangeQuestion] = useState(false);
+  const [animationState, animationStateDispatch] = useReducer(animationStateReducer, initAnimationState);
+  const {changeQuestion, changeTotalScore, changeScore} = animationState;
   const {
     scoreDropper,
     setDropScore,
-    setQuestionStartTime
-  } = useScoreDropper();
+  } = useScoreDropper(score, disableSubmit);
 
   const startQuestions = useCallback(async () => {
     // first question
@@ -75,36 +103,35 @@ const Play: React.FC<PlayProps> = ({
     dispatch(RESET_SCORE());
     gameStateDispatcher(INCREASE_QUESTION_COUNT())
     const { value1, value2 }: {value1: number, value2: number} = makeQuestion();
-    setChangeQuestion(true);
+    animationStateDispatch({type: 'CHANGE_Q_START'});
     gameStateDispatcher(SET_ADDENDS(value1, value2));
     scoreDropper();
   }, [dispatch, scoreDropper]);
 
   const newQuestion = useCallback(() => {
-    const { REDUCE_SCORE_BY } = CONSTANTS;
+    if (disableSubmit) return;
     gameStateDispatcher(INCREASE_QUESTION_COUNT())
     const { value1, value2 }: {value1: number, value2: number} = makeQuestion();
-    setChangeQuestion(true);
+    animationStateDispatch({type: 'CHANGE_Q_START'});
     gameStateDispatcher(SET_ADDENDS(value1, value2));
     dispatch(RESET_GUESS());
-    dispatch(RESET_SCORE(REDUCE_SCORE_BY));
-    setOutOfTime(false);
     scoreDropper();
-  }, [dispatch, scoreDropper]);
+    dispatch(RESET_SCORE());
+    setDisableSubmit(false);
+  }, [dispatch, scoreDropper, disableSubmit]);
 
   const submitAnswer = async (): Promise<null> => {
     if (disableSubmit) {
       return;
     }
-    setChangeQuestion(false);
+    animationStateDispatch({type: 'CHANGE_Q_END'});
+    animationStateDispatch({type: 'CHANGE_TS_START'});
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
     setDropScore(false);
-    setQuestionStartTime(null);
     setDisableSubmit(true);
     const correct: boolean = parseInt(answer) === addends.value1 + addends.value2;
     if (correct) dispatch(INCREASE_TOTAL_SCORE(score));
     gameStateDispatcher(correct ? CORRECT_ANSWER() : INCORRECT_ANSWER());
-    await sleep(SUCCESS_MARKER_DURATION);
     dispatch(PUSH_CORRECT_QUESTION({
       value1: addends.value1,
       value2: addends.value2,
@@ -112,6 +139,7 @@ const Play: React.FC<PlayProps> = ({
       score: correct ? score : 0,
       correct
     }));
+    await sleep(SUCCESS_MARKER_DURATION);
 
     setDisableSubmit(false);
     gameStateDispatcher(RESET_CORRECT_ANSWER());
@@ -119,17 +147,14 @@ const Play: React.FC<PlayProps> = ({
     return;
   };
   
-  const endQuestion = useCallback(async () => {
+  const handleOutOfTime = useCallback(async () => {
     dispatch(RESET_GUESS());
     setDisableSubmit(true);
     setDropScore(false);
-    setQuestionStartTime(null);
     const { SUCCESS_MARKER_DURATION } = CONSTANTS;
     gameStateDispatcher(INCORRECT_ANSWER());
     await sleep(SUCCESS_MARKER_DURATION);
     gameStateDispatcher(RESET_CORRECT_ANSWER());
-    setDisableSubmit(false);
-    newQuestion();
     dispatch(PUSH_QUESTION({
       value1: addends.value1,
       value2: addends.value2,
@@ -137,7 +162,8 @@ const Play: React.FC<PlayProps> = ({
       score: 0,
       correct: false
     }));
-    }, [answer, dispatch, newQuestion, addends, setDropScore, setQuestionStartTime]);
+    newQuestion();
+    }, [answer, dispatch, newQuestion, addends, setDropScore]);
 
   useEffect(() => {
     // Start Game
@@ -149,11 +175,10 @@ const Play: React.FC<PlayProps> = ({
 
   useEffect(() => {
     // Out of time
-    if (score <= 0  && !outOfTime) {
-      setOutOfTime(true);
-      endQuestion();
+    if (score <= 0 && !disableSubmit) {
+      handleOutOfTime();
     }
-  }, [score, endQuestion, outOfTime, dispatch])
+  }, [score, handleOutOfTime, dispatch, disableSubmit])
 
   useEffect(() => {
     // End game
@@ -170,9 +195,34 @@ const Play: React.FC<PlayProps> = ({
     }
   }, [questionCount, dispatch, highScore, totalScore, scoreInterval]);
 
+  useEffect(() => {
+    if (!changeQuestion) return;
+    // Change in question addends animation
+    const timerID: ReturnType<typeof setTimeout> = setTimeout(() => {
+        animationStateDispatch({type: 'CHANGE_Q_END'});
+      }, 500)
+    return () => {
+      clearTimeout(timerID);
+    };
+  }, [changeQuestion, animationStateDispatch]);
+
+  useEffect(() => {
+    if (!changeScore) return;
+    let timerID: NodeJS.Timer = setTimeout(() => {
+        animationStateDispatch({type: 'CHANGE_S_END'});
+      }, 500)
+    return () => {
+      clearTimeout(timerID);
+    };
+  }, [changeScore, animationStateDispatch]);
+
   return (
     <div className={styles.container}>
-      <GameHeader questionCount={questionCount} />
+      <GameHeader
+        questionCount={questionCount}
+        changeTotalScore={changeTotalScore}
+        animationStateDispatch={animationStateDispatch}
+      />
       <QuestionArea
         submitAnswer={submitAnswer}
         correct={answerCorrect}
@@ -180,7 +230,9 @@ const Play: React.FC<PlayProps> = ({
         value2={addends.value2}
         disableSubmit={disableSubmit}
         changeQuestion={changeQuestion}
-        setChangeQuestion={setChangeQuestion}
+        changeTotalScore={changeTotalScore}
+        changeScore={changeScore}
+        animationStateDispatch={animationStateDispatch}
       />
       <OnscreenInput />
     </div>  
