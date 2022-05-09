@@ -3,7 +3,6 @@ const storageAvailable = (type: string) => {
   let storage: any;
   try {
       storage = window[type];
-      console.log(typeof storage);
       const x: string = '__storage_test__';
       storage.setItem(x, x);
       storage.removeItem(x);
