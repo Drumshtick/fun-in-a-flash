@@ -14,6 +14,7 @@ interface KeyboardInput {
   reviewAnswer: boolean,
   view: string,
   submitAnswer: Function,
+  disableSubmit: boolean
 }
 
 function mapStateToProps(state: State) {
@@ -36,9 +37,11 @@ const KeyboardInput = ({
   reviewAnswer,
   view,
   submitAnswer,
+  disableSubmit
 }) => {
   const {isMobile} = useDeviceCheck();
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (disableSubmit) return;
     const { key } = e;
     const specialKeys: {
       'Backspace': Function,
@@ -51,18 +54,14 @@ const KeyboardInput = ({
       specialKeys[key]();
     }
 
-  }, [dispatch]);
-
-
-  const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>): void => {
-    const { key }: { key: string } = e;
     if (isNumber(key) && answer.length < MAX_CHAR) {
       dispatch(INPUT_NUMBER(key));
     }
     if (key === 'Enter') {
       submitAnswer();
     }
-  }, [dispatch, submitAnswer, answer]);
+
+  }, [dispatch, answer, submitAnswer, disableSubmit]);
 
   return (
     <input
@@ -71,7 +70,6 @@ const KeyboardInput = ({
       disabled={view === 'play' ? false: true}
       value={reviewAnswer ? reviewAnswer : formatValue(answer)}
       onKeyDown={e => handleKeyDown(e)}
-      onKeyPress={e => handleKeyPress(e)}
       ref={element => {
         if (view !== 'play') return;
         element && element.focus()
