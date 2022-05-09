@@ -1,10 +1,14 @@
 import React, {useEffect} from 'react';
-import { connect } from 'react-redux';
-import { SWITCH_VIEW_TO_WELCOME } from '../../redux/actions/viewActionTypes';
-import { RESET_GUESS } from '../../redux/actions/inputActionTypes';
-import { CLEAR_INTERVAL_ID } from '../../redux/actions/scoreIntervalActionTypes';
-import { RESET_TOTAL_SCORE } from '../../redux/actions/totalScoreActionTypes';
-import { RESET_RESULTS } from '../../redux/actions/setResultsActionTypes';
+import {connect} from 'react-redux';
+import {AppDispatch, State} from '../../redux/store';
+import {SWITCH_VIEW_TO_WELCOME} from '../../redux/actions/viewActionTypes';
+import {RESET_GUESS} from '../../redux/actions/inputActionTypes';
+import {CLEAR_INTERVAL_ID} from '../../redux/actions/scoreIntervalActionTypes';
+import {RESET_TOTAL_SCORE} from '../../redux/actions/totalScoreActionTypes';
+import {RESET_RESULTS} from '../../redux/actions/setResultsActionTypes';
+import {ActionTypes} from '../Play/animationStateReducer';
+import {CHANGE_TS_END} from './animationStateReducer';
+
 import Button from '@mui/material/Button'
 import CloseIcon from '@mui/icons-material/Close';
 import StarsIcon from '@mui/icons-material/Stars';
@@ -12,7 +16,16 @@ import styles from '../../styles/GameHeader.module.scss';
 
 const TOTAL_QUESTIONS = process.env.NEXT_PUBLIC_TOTAL_QUESTIONS;
 
-const mapStateToProps = (state) => {
+interface GameHeader {
+  questionCount: number,
+  totalScore: number,
+  dispatch: AppDispatch,
+  scoreInterval: number,
+  changeTotalScore: boolean,
+  animationStateDispatch: React.Dispatch<ActionTypes>
+}
+
+const mapStateToProps = (state: State) => {
   return {
     totalScore: state.totalScore.totalScore,
     scoreInterval: state.scoreInterval.ID
@@ -28,7 +41,7 @@ const GameHeader = ({
   animationStateDispatch
 }) => {
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     if (scoreInterval) {
       clearTimeout(scoreInterval);
     }
@@ -40,12 +53,10 @@ const GameHeader = ({
   };
 
   useEffect(() => {
-    let timerID;
-    if (changeTotalScore) {
-      timerID = setTimeout(() => {
-        animationStateDispatch({type: 'CHANGE_TS_END'})
-      }, 500)
-    }
+    if (!changeTotalScore) return;
+    const timerID: NodeJS.Timeout = setTimeout(() => {
+        animationStateDispatch(CHANGE_TS_END());
+      }, 500);
     return () => {
       clearTimeout(timerID);
     };
